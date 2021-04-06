@@ -9,6 +9,115 @@ All extensions and patches are packed into a `view_component-contrib` _meta-gem_
 
 ## Organizing components, or sidecar pattern extended
 
+ViewComponent provides different ways to organize your components: putting everyhing (Ruby files, templates, etc.) into `app/components` folder or using a _sidecar_ directory for everything but the `.rb` file itself. The first approach could easily result in a directory bloat; the second is better though there is a room for improvement: we can move `.rb` files into sidecar folders as well. Then, we can get rid of the _noisy_ `_component` suffixes. Finally, we can also put previews there (since storing them within the test folder is a little bit confusing):
+
+```txt
+components/                                 components/
+  example_component/                          example/
+    example_component.html                       component.html
+  example_component.rb              →            component.rb
+test/                                            preview.rb
+  components/                                    component.css
+    previews/                                    component.js
+      example_component_preview.rb
+```
+
+Thus, everything related to a particular component (except tests, at least for now) is located within a single folder.
+
+The two base classes are added to follow the Rails way: `ApplicationViewComponent` and `ApplicationViewComponentPreview`.
+
+We also put the `components` folder into the `app/frontend` folder, because `app/components` is too general and could be used for other types of components, not related to the view layer.
+
+Here is an example Rails configuration:
+
+```ruby
+config.autoload_paths << Rails.root.join("app", "frontend", "components")
+```
+
+### Organizing previews
+
+First, we need to specify the lookup path for previews in the app's configuration:
+
+```ruby
+config.view_component.preview_paths << Rails.root.join("app", "frontend", "components")
+```
+
+By default, ViewComponent requires preview files to have `_preview.rb` suffix, and it's not configurable (yet). To overcome this, we have to patch the `ViewComponent::Preview` class:
+
+```ruby
+# you can put this into an initializer
+ActiveSupport.on_load(:view_component) do
+  ViewComponent::Preview.extend ViewComponentContrib::Preview::Sidecarable
+end
+```
+
+#### Reducing previews boilerplate
+
+In most cases, previews contain only the `default` example and a very simple template (`= render Component.new(**options)`).
+We provide a `ViewComponentContrib::Preview` class, which helps to reduce the boilerplate by re-using templates and providing a handful of helpers.
+
+The default template shipped with the gem is as follows:
+
+```html
+<div class="<%= container_class %>">
+  <%= render component %>
+</div>
+```
+
+Let's assume that you have the following `ApplicationViewComponentPreview`:
+
+```ruby
+class ApplicationViewComponentPreview < ViewComponentContrib::Preview::Base
+  # Do not show this class in the previews index
+  self.abstract_class = true
+end
+```
+
+It allows to render a component instances within a configurable container. The component could be either created explicitly in the preview action:
+
+```ruby
+class Banner::Preview < ApplicationViewComponentPreview
+  def default
+    render_component Banner::Component.new(text: "Welcome!")
+  end
+end
+```
+
+Or implicitly:
+
+```ruby
+class LikeButton::Preview < ApplicationViewComponentPreview
+  def default
+    # Nothing here; the preview class would try to build a component automatically
+    # calling `LikeButton::Component.new`
+  end
+end
+```
+
+To provide the container class, you should either specify it in the preview class itself or within a particular action by calling `#render_with`:
+
+```ruby
+class Banner::Preview < ApplicationViewComponentPreview
+  self.container_class = "absolute w-full"
+
+  def default
+    # This will use `absolute w-full` for the container class
+    render_component Banner::Component.new(text: "Welcome!")
+  end
+
+  def mobile
+    render_with(
+      component: Banner::Component.new(text: "Welcome!").with_variant(:mobile),
+      container_class: "w-25"
+    )
+  end
+end
+```
+
+If you need more control over your template, you can add a custom `preview.html.erb` file.
+**NOTE:** We assume that all examples uses the same `preview.html`. If it's not the case,
+you can use the original `#render_with_template` method.
+
 ## Installation and generating generators
 
 ## I18n integration (alternative)

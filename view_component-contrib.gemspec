@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
 
   s.license = "MIT"
 
-  s.files = Dir.glob("lib/**/*") + Dir.glob("bin/**/*") + %w[README.md LICENSE.txt CHANGELOG.md]
+  s.files = Dir.glob("app/**/*") + Dir.glob("lib/**/*") + %w[README.md LICENSE.txt CHANGELOG.md]
   s.require_paths = ["lib"]
   s.required_ruby_version = ">= 2.5"
 
@@ -31,5 +31,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "capybara"
   s.add_development_dependency "combustion", ">= 1.1"
   s.add_development_dependency "minitest", "~> 5.0"
+  s.add_development_dependency "minitest-focus"
+  s.add_development_dependency "minitest-reporters"
   s.add_development_dependency "rake", ">= 13.0"
 end

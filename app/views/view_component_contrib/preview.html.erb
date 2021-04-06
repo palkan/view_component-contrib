@@ -1,0 +1,7 @@
+<div class="<%= container_class %>">
+  <%- if component -%>
+    <%= render component %>
+  <%- else -%>
+  Failed to infer a component from the preview: <%= error %>
+  <%- end -%>
+</div>
