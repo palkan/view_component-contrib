@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/view_component/contrib/version"
+require_relative "lib/view_component_contrib/version"
 
 Gem::Specification.new do |s|
   s.name = "view_component-contrib"
-  s.version = ViewComponent::Contrib::VERSION
+  s.version = ViewComponentContrib::VERSION
   s.authors = ["Vladimir Dementyev"]
   s.email = ["dementiev.vm@gmail.com"]
   s.homepage = "http://github.com/palkan/view_component-contrib"
@@ -25,8 +25,11 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.required_ruby_version = ">= 2.5"
 
+  s.add_dependency "view_component"
+
   s.add_development_dependency "bundler", ">= 1.15"
+  s.add_development_dependency "capybara"
   s.add_development_dependency "combustion", ">= 1.1"
+  s.add_development_dependency "minitest", "~> 5.0"
   s.add_development_dependency "rake", ">= 13.0"
-  s.add_development_dependency "rspec", ">= 3.9"
 end
