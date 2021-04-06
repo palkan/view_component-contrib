@@ -7,12 +7,14 @@ end
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 
+require "ruby-next/language/runtime" unless ENV["CI"]
+
 ENV["RAILS_ENV"] = "test"
 
 require "combustion"
 
 require "view_component/engine"
-require "view_component_contrib/engine"
+require "view_component_contrib"
 
 Combustion.path = "test/internal"
 Combustion.initialize! :action_controller, :action_view do

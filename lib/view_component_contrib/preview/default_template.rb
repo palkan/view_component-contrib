@@ -23,7 +23,7 @@ module ViewComponentContrib
             end
         end
 
-        def preview_example_template_path(*)
+        def preview_example_template_path(...)
           super
         rescue ViewComponent::PreviewTemplateError
           has_preview_template = preview_paths.find do |path|
@@ -38,5 +38,5 @@ module ViewComponentContrib
 end
 
 ActiveSupport.on_load(:view_component) do
-  ViewComponent::Base.preview_paths << File.expand_path(File.join(__dir__, "../../../app/views"))
+  ViewComponent::Base.preview_paths << File.join(ViewComponentContrib::APP_PATH, "views")
 end

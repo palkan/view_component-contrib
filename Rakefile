@@ -30,4 +30,9 @@ namespace :test do
   end
 end
 
+desc "Run Ruby Next nextify"
+task :nextify do
+  sh "bundle exec ruby-next nextify -V"
+end
+
 task default: %w[rubocop rubocop:md test]

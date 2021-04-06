@@ -27,6 +27,14 @@ Gem::Specification.new do |s|
 
   s.add_dependency "view_component"
 
+  # When gem is installed from source, we add `ruby-next` as a dependency
+  # to auto-transpile source files during the first load
+  if ENV["RELEASING_GEM"].nil? && File.directory?(File.join(__dir__, ".git"))
+    s.add_runtime_dependency "ruby-next", ">= 0.12.0"
+  else
+    s.add_dependency "ruby-next-core", ">= 0.12.0"
+  end
+
   s.add_development_dependency "bundler", ">= 1.15"
   s.add_development_dependency "capybara"
   s.add_development_dependency "combustion", ">= 1.1"

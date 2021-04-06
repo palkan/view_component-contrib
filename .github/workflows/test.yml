@@ -42,6 +42,8 @@ jobs:
         bundle config --global gemfile ${{ matrix.gemfile }}
         bundle install
         bundle update
+    - name: Run Ruby Next
+      run: bundle exec rake nextify
     - name: Run tests
       run: |
         bundle exec rake test:isolated

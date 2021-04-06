@@ -33,7 +33,7 @@ module ViewComponentContrib
             end
         end
 
-        def render_args(*)
+        def render_args(...)
           super.tap do |res|
             res[:locals] ||= {}
             build_component_instance(res[:locals])
