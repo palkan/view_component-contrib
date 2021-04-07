@@ -37,7 +37,7 @@ end
 
 desc "Generate installation template"
 task :build_template do
-  require_relative "app/templates/install/builder.rb"
+  require_relative "app/templates/install/builder"
   require "erb"
 
   builder = TemplateBuilder.new(File.join(__dir__, "app/templates/install"))

@@ -41,3 +41,12 @@ gem release -t
 ```
 
 Don't forget to push tags and write release notes on GitHub (if necessary).
+
+4. Update Rails Bytes template.
+
+```sh
+# copy the contents
+bundle exec rake build_template | pbcopy
+```
+
+Go to the website and update the contents of the template.
