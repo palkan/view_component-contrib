@@ -394,6 +394,40 @@ end
 
 ## Wrapped components
 
+Sometimes we need to wrap a component into a custom HTML container (for positioning or whatever). By default, such wrapping doesn't play well with the `#render?` method because if we don't need a component, we don't need a wrapper.
+
+To solve this problem, we introduce a special `ViewComponentContrib::WrapperComponent` class: it takes any component as the only argument and accepts a block during rendering to define a wrapping HTML. And it renders only if the _inner component_'s `#render?` method returns true.
+
+```erb
+<%= render ViewComponentContrib::WrappedComponent.new(Example::Component.new) do |wrapper| %>
+  <div class="col-md-auto mb-4">
+    <%= wrapper.component %>
+  </div>
+<%- end -%>
+```
+
+You can add a `#wrapped` method to your base class to simplify the code above:
+
+```ruby
+class ApplicationViewComponent < ViewComponent::Base
+  # adds #wrapped method
+  # NOTE: Already included into ViewComponentContrib::Base
+  include ViewComponentContrib::WrappedHelper
+end
+```
+
+And the template looks like this now:
+
+```erb
+<%= render Example::Component.new.wrapped do |wrapper| %>
+  <div class="col-md-auto mb-4">
+    <%= wrapper.component %>
+  </div>
+<%- end -%>
+```
+
+You can use the `#wrapped` method on any component inherited from `ApplicationViewComponent` to wrap it automatically:
+
 ## Separating context and arguments
 
 ## ToDo list
