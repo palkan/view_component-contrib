@@ -5,7 +5,14 @@
 
 This repository contains various code snippets and examples related to the [ViewComponent][] library. The goal of this project is to share common patterns and practices which we found useful while working on different projects (and which haven't been or couldn't be proposed to the upstream).
 
-All extensions and patches are packed into a `view_component-contrib` _meta-gem_.
+All extensions and patches are packed into a `view_component-contrib` _meta-gem_. So, to use them add to your Gemfile:
+
+```ruby
+gem "view_component-contrib"
+```
+
+<a href="https://evilmartians.com/">
+<img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg" alt="Sponsored by Evil Martians" width="236" height="54"></a>
 
 ## Organizing components, or sidecar pattern extended
 
@@ -17,8 +24,8 @@ components/                                 components/
     example_component.html                       component.html
   example_component.rb              →            component.rb
 test/                                            preview.rb
-  components/                                    component.css
-    previews/                                    component.js
+  components/                                    index.css
+    previews/                                    index.js
       example_component_preview.rb
 ```
 
@@ -118,6 +125,185 @@ If you need more control over your template, you can add a custom `preview.html.
 **NOTE:** We assume that all examples uses the same `preview.html`. If it's not the case,
 you can use the original `#render_with_template` method.
 
+## Organizing assets (JS, CSS)
+
+**NOTE*: This section assumes the usage of Webpack, Vite or other _frontend_ builder (e.g., not Sprockets).
+
+We store JS and CSS files in the same sidecar folder:
+
+```txt
+components/
+  example/
+    component.html
+    component.rb
+    index.css
+    index.js
+```
+
+The `index.js` is the controller's entrypoint; it imports the CSS file and may contain some JS code:
+
+```js
+import "./index.css"
+```
+
+In the root of the `components` folder we have the `index.js` file, which loads all the components:
+
+```js
+// components/index.js
+const context = require.context(".", true, /index.js$/)
+context.keys().forEach(context);
+```
+
+### Using with StimulusJS
+
+You can define Stimulus controllers right in the `index.js` file using the following approach:
+
+```js
+import "./index.css"
+// We reserve Controller for the export name
+import { Controller as BaseController } from "stimulus";
+
+export class Controller extends BaseController {
+  connect() {
+    // ...
+  }
+}
+```
+
+Then, we need to update the `components/index.js` to automatically register controllers:
+
+```js
+// We recommend putting Stimulus application instance into its own
+// module, so you can use it for non-component controllers
+
+// init/stimulus.js
+import { Application } from "stimulus";
+export const application = Application.start();
+
+// components/index.js
+import { application } from "../init/stimulus";
+
+const context = require.context(".", true, /index.js$/)
+context.keys().forEach((path) => {
+  const mod = context(path);
+
+  // Check whether a module has the Controller export defined
+  if (!mod.Controller) return;
+
+  // Convert path into a controller identifier:
+  //   example/index.js -> example
+  //   nav/user_info/index.js -> nav--user-info
+  const identifier = path.replace(/^\.\//, '')
+    .replace(/\/index\.js$/, '')
+    .replace(/\//, '--');
+
+  application.register(identifier, mod.Controller);
+});
+```
+
+We also can add a helper to our base ViewComponent class to generate the controller identifier following the convention above:
+
+```ruby
+class ApplicationViewComponent
+  private
+
+  def identifier
+    @identifier ||= self.class.name.sub("::Component", "").underscore.split("/").join("--")
+  end
+end
+```
+
+And now in your template:
+
+```erb
+<!-- component.html -->
+<div data-controller="<%= identifier %>">
+</div>
+```
+
+### Isolating CSS with postcss-modules
+
+Our JS code is isolated by design but our CSS is still global. Hence we should care about naming, use some convention (such as BEM) or whatever.
+
+Alternatively, we can leverage the power of modern frontend technologies such as [CSS modules][] via [postcss-modules][] plugin. It allows you to use _local_ class names in your component, and takes care of generating unique names in build time. We can configure PostCSS Modules to follow our naming convention, so, we can generate the same unique class names in both JS and Ruby.
+
+First, install the `postcss-modules` plugin (`yarn add postcss-modules`).
+
+Then, add the following to your `postcss.config.js`:
+
+```js
+module.exports = {
+  plugins: {
+    'postcss-modules': {
+      generateScopedName: (name, filename, _css) => {
+        const matches = filename.match(/\/app\/frontend\/components\/?(.*)\/index.css$/);
+        // Do not transform CSS files from outside of the components folder
+        if (!matches) return name;
+
+        // identifier here is the same identifier we used for Stimulus controller (see above)
+        const identifier = matches[1].replace("/", "--");
+
+        // We also add the `c-` prefix to all components classes
+        return `c-${identifier}-${name}`;
+      },
+      // Do not generate *.css.json files (we don't use them)
+      getJSON: () => {}
+    },
+    /// other plugins
+  },
+}
+```
+
+Finally, let's add a helper to our view components:
+
+```ruby
+class ApplicationViewComponent
+  private
+
+  # the same as above
+  def identifier
+    @identifier ||= self.class.name.sub("::Component", "").underscore.split("/").join("--")
+  end
+
+  # We also add an ability to build a class from a different component
+  def class_for(name, from: identifier)
+    "c-#{from}-#{name}"
+  end
+end
+```
+
+And now in your template:
+
+```erb
+<!-- example/component.html -->
+<div class="<%= class_for("container") %>">
+  <p class="<%= class_for("body") %>"><%= text %></p>
+</div>
+```
+
+Assuming that you have the following `index.css`:
+
+```css
+.container {
+  padding: 10px;
+  background: white;
+  border: 1px solid #333;
+}
+
+.body {
+  margin-top: 20px;
+  font-size: 24px;
+}
+```
+
+The final HTML output would be:
+
+```html
+<div class="c-example-container">
+  <p class="c-example-body">Some text</p>
+</div>
+```
+
 ## Installation and generating generators
 
 ## I18n integration (alternative)
@@ -171,8 +357,6 @@ end
 
 ## Hanging `#initialize` out to Dry
 
-## Isolating CSS with postcss-modules
-
 ## Wrapped components
 
 ## Separating context and arguments
@@ -187,3 +371,5 @@ end
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
 [ViewComponent]: https://github.com/github/view_component
+[postcss-modules]: https://github.com/madyankin/postcss-modules
+[CSS modules]: https://github.com/css-modules/css-modules
