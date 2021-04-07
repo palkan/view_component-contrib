@@ -357,6 +357,41 @@ end
 
 ## Hanging `#initialize` out to Dry
 
+One way to improve development experience with ViewComponent is to move from imperative `#initialize` to something declarative.
+Our choice is [dry-initializer][].
+
+Assuming that we have the following component:
+
+```ruby
+class FlashAlert::Component < ApplicationViewComponent
+  attr_reader :type, :duration, :body
+
+  def initialize(body:, type: "success", duration: 3000)
+    @body = body
+    @type = type
+    @duration = duration
+  end
+end
+```
+
+Let's add `dry-initializer` to our base class:
+
+```ruby
+class ApplicationViewComponent
+  extend Dry::Initializer
+end
+```
+
+And then refactor our FlashAlert component:
+
+```ruby
+class FlashAlert::Component < ApplicationViewComponent
+  option :type, default: proc { "success" }
+  option :duration, default: proc { 3000 }
+  option :body
+end
+```
+
 ## Wrapped components
 
 ## Separating context and arguments
@@ -373,3 +408,4 @@ The gem is available as open source under the terms of the [MIT License](http://
 [ViewComponent]: https://github.com/github/view_component
 [postcss-modules]: https://github.com/madyankin/postcss-modules
 [CSS modules]: https://github.com/css-modules/css-modules
+[dry-initializer]: https://dry-rb.org/gems/dry-initializer
