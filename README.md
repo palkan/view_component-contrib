@@ -14,6 +14,39 @@ gem "view_component-contrib"
 <a href="https://evilmartians.com/">
 <img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg" alt="Sponsored by Evil Martians" width="236" height="54"></a>
 
+## Installation and generating generators
+
+**NOTE:** We highly recommend to walk through this document before running the generator.
+
+The easiest way to start using `view_component-contrib` extensions and patterns is to run an interactive generator (a custom [Rails template][railsbytes-template]).
+
+All you need to do is to run:
+
+```sh
+rails app:template LOCATION="https://railsbytes.com/script/zJosO5"
+```
+
+The command above:
+
+- Installs `view_component-contrib` gem.
+- Configure `view_component` paths.
+- Adds `ApplicationViewComponent` and `ApplicationViewComponentPreview` classes.
+- Configures testing framework (RSpec or Minitest).
+- Adds required JS/CSS configuration.
+- **Adds a custom generator to create components**.
+
+The custom generator would allow you to create all the required component files in a single command:
+
+```sh
+bundle exec rails g view_component Example
+
+# see all available options
+bundle exec rails g view_component -h
+```
+
+**Why adding a custom generator to the project instead of bundling it into the gem?** The generator could only be useful if it fits
+your project needs. The more control you have over the generator the better. Thus, the best way is to make the generator a part of a project.
+
 ## Organizing components, or sidecar pattern extended
 
 ViewComponent provides different ways to organize your components: putting everyhing (Ruby files, templates, etc.) into `app/components` folder or using a _sidecar_ directory for everything but the `.rb` file itself. The first approach could easily result in a directory bloat; the second is better though there is a room for improvement: we can move `.rb` files into sidecar folders as well. Then, we can get rid of the _noisy_ `_component` suffixes. Finally, we can also put previews there (since storing them within the test folder is a little bit confusing):
@@ -304,8 +337,6 @@ The final HTML output would be:
 </div>
 ```
 
-## Installation and generating generators
-
 ## I18n integration (alternative)
 
 ViewComponent recently added (experimental) [I18n support](https://github.com/github/view_component/pull/660), which allows you to have **isolated** localization files for each component. Isolation rocks, but managing dozens of YML files spread accross the project could be tricky, especially, if you rely on some external localization tool which creates these YMLs for you.
@@ -428,8 +459,6 @@ And the template looks like this now:
 
 You can use the `#wrapped` method on any component inherited from `ApplicationViewComponent` to wrap it automatically:
 
-## Separating context and arguments
-
 ## ToDo list
 
 - Better preview tools (w/o JS deps 😉).
@@ -443,3 +472,4 @@ The gem is available as open source under the terms of the [MIT License](http://
 [postcss-modules]: https://github.com/madyankin/postcss-modules
 [CSS modules]: https://github.com/css-modules/css-modules
 [dry-initializer]: https://dry-rb.org/gems/dry-initializer
+[railsbytes-template]: https://railsbytes.com/templates/zJosO5

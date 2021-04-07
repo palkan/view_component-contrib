@@ -2,8 +2,10 @@
 
 module ViewComponentContrib
   module Preview
-    # First, enable abstract classes
-    ViewComponent::Preview.extend ViewComponentContrib::Preview::Abstract
+    # First, enable abstract classes (if not already extended)
+    unless ViewComponent::Preview.singleton_class.is_a?(ViewComponentContrib::Preview::Abstract)
+      ViewComponent::Preview.extend ViewComponentContrib::Preview::Abstract
+    end
 
     # Base view component class with extensions already included
     class Base < ViewComponent::Preview

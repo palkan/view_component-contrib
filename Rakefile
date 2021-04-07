@@ -35,4 +35,15 @@ task :nextify do
   sh "bundle exec ruby-next nextify -V"
 end
 
+desc "Generate installation template"
+task :build_template do
+  require_relative "app/templates/install/builder.rb"
+  require "erb"
+
+  builder = TemplateBuilder.new(File.join(__dir__, "app/templates/install"))
+  contents = File.read(File.join(__dir__, "app/templates/install/template.rb"))
+
+  puts ERB.new(contents).result(builder.get_binding)
+end
+
 task default: %w[rubocop rubocop:md test]
