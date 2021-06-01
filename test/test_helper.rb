@@ -35,6 +35,7 @@ require "minitest/focus"
 require "minitest/reporters"
 Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
 
+require "action_controller/test_case"
 class ViewTestCase < Minitest::Test
   include ViewComponent::TestHelpers
 end
