@@ -85,6 +85,8 @@ if USE_WEBPACK
   say_status :info, "✅ Added index.js to load components JS/CSS"
   say "⚠️   Don't forget to import component JS/CSS (#{ROOT_PATH}/index.js) from your application.js entrypoint"
 
+  say "⚠️   Don't forget to add #{ROOT_PATH} to `additional_paths` in your `webpacker.yml` (unless your `source_path` already includes it)"
+
   USE_POSTCSS_MODULES = yes? "Would you like to use postcss-modules to isolate component styles?"
 
   if USE_POSTCSS_MODULES
