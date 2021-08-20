@@ -29,6 +29,7 @@ class TranslationHelperTest < ViewTestCase
 
   module Test
     class Component < ViewComponent::Base
+      include(ViewComponent::Translatable) unless ancestors.include?(ViewComponent::Translatable)
       include ViewComponentContrib::TranslationHelper
 
       def call
