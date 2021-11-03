@@ -14,7 +14,7 @@ context.keys().forEach((path) => {
   //   nav/user_info/index.js -> nav--user-info
   const identifier = path.replace(/^\\.\\//, '')
     .replace(/\\/index\\.js$/, '')
-    .replace(/\//g, '--');
+    .replace(/\\//g, '--');
 
   application.register(identifier, mod.Controller);
 });
