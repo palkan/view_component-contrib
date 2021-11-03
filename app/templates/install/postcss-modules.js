@@ -4,7 +4,7 @@
       if (!matches) return name;
 
       // identifier here is the same identifier we used for Stimulus controller (see above)
-      const identifier = matches[1].replace(/\//g, "--");
+      const identifier = matches[1].replace(/\\//g, "--");
 
       // We also add the `c-` prefix to all components classes
       return `c-${identifier}-${name}`;
