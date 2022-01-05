@@ -14,7 +14,8 @@ module ViewComponentContrib
         alias_method :abstract_class?, :abstract_class
 
         def all
-          super.reject(&:abstract_class?)
+          load_previews if descendants.reject(&:abstract_class?).empty?
+          descendants.reject(&:abstract_class?)
         end
       end
     end
