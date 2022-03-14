@@ -30,7 +30,7 @@ module ViewComponentContrib
             Dir.glob(File.join(path, preview_name, "preview.html.*")).any?
           end
 
-          has_preview_template ? File.join(preview_name, "preview") : DEFAULT_TEMPLATE
+          has_preview_template ? File.join(preview_name, "preview") : default_preview_template
         end
       end
     end
