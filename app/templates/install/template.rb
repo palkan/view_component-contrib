@@ -124,6 +124,8 @@ if USE_WEBPACK
 
     say_status :info, "✅ postcss-modules configured"
   end
+else
+  say "⚠️  See the discussion on how to configure non-Wepback JS/CSS installations: https://github.com/palkan/view_component-contrib/discussions/14"
 end
 
 <%= embed("./generator.rb") %>
