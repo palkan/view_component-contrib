@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.files = Dir.glob("app/**/*") + Dir.glob("lib/**/*") + %w[README.md LICENSE.txt CHANGELOG.md]
   s.require_paths = ["lib"]
-  s.required_ruby_version = ">= 2.5"
+  s.required_ruby_version = ">= 2.6"
 
   s.add_dependency "view_component"
 

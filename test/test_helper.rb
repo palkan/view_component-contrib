@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-begin
-  require "pry-byebug"
-rescue LoadError
-end
-
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 
 require "ruby-next/language/runtime" unless ENV["CI"]
