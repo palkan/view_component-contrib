@@ -12,8 +12,6 @@ require "ruby-next/language/runtime" unless ENV["CI"]
 ENV["RAILS_ENV"] = "test"
 
 require "combustion"
-
-require "view_component/engine"
 require "view_component_contrib"
 
 Combustion.path = "test/internal"

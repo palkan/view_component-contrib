@@ -112,7 +112,7 @@ To define your own default template:
 ```ruby
 class ApplicationViewComponentPreview < ViewComponentContrib::Preview::Base
   # ...
-  self.default_preview_template = "path/to/your/template.html.{erb,haml,slim}"  
+  self.default_preview_template = "path/to/your/template.html.{erb,haml,slim}"
   # ...
 end
 ```

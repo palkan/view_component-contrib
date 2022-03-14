@@ -36,7 +36,3 @@ module ViewComponentContrib
     end
   end
 end
-
-ActiveSupport.on_load(:view_component) do
-  ViewComponent::Base.preview_paths << File.join(ViewComponentContrib::APP_PATH, "views")
-end
