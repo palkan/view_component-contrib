@@ -98,10 +98,23 @@ We provide a `ViewComponentContrib::Preview` class, which helps to reduce the bo
 
 The default template shipped with the gem is as follows:
 
-```html
+```erb
 <div class="<%= container_class %>">
-  <%= render component %>
+  <%- if component -%>
+    <%= render component %>
+  <%- else -%>
+    Failed to infer a component from the preview: <%= error %>
+  <%- end -%>
 </div>
+```
+
+To define your own default template:
+```ruby
+class ApplicationViewComponentPreview < ViewComponentContrib::Preview::Base
+  # ...
+  self.default_preview_template = "path/to/your/template.html.{erb,haml,slim}"  
+  # ...
+end
 ```
 
 Let's assume that you have the following `ApplicationViewComponentPreview`:
