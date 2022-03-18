@@ -42,11 +42,8 @@ gem release -t
 
 Don't forget to push tags and write release notes on GitHub (if necessary).
 
-4. Update Rails Bytes template.
+4. Update Rails Bytes template. Requires `RAILS_BYTES_TOKEN`, `RAILS_BYTES_ACCOUNT_ID` envs.
 
 ```sh
-# copy the contents
-bundle exec rake build_template | pbcopy
+bundle exec rake publish_template
 ```
-
-Go to the website and update the contents of the template.
