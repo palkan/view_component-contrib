@@ -2,6 +2,8 @@
 
 ## master
 
+- Automatic publish to RailsBytes in CI. ([@fargelus][])
+
 ## 0.1.1 (2022-03-14)
 
 - Fix adding gem's previews to the app's path. ([@palkan][])

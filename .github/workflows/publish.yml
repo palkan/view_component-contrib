@@ -1,0 +1,23 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - v*
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+      - name: Rake install
+        run: gem install rake
+      - name: Publish template to RailsBytes
+        env:
+          RAILS_BYTES_ACCOUNT_ID: ${{secrets.RAILS_BYTES_ACCOUNT_ID}}
+          RAILS_BYTES_TOKEN: ${{secrets.RAILS_BYTES_TOKEN}}
+        run: rake publish_template
