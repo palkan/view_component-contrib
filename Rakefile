@@ -43,7 +43,9 @@ task :build_template do
   builder = TemplateBuilder.new(File.join(__dir__, "app/templates/install"))
   contents = File.read(File.join(__dir__, "app/templates/install/template.rb"))
 
-  puts ERB.new(contents).result(builder.get_binding)
+  ERB.new(contents).result(builder.get_binding).tap do |template|
+    puts template
+  end
 end
 
 desc "Push installation template to RailsBytes"
