@@ -15,3 +15,4 @@
 - Initial release.
 
 [@palkan]: https://github.com/palkan
+[@fargelus]: https://github.com/fargelus
