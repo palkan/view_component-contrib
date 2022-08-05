@@ -1,5 +1,9 @@
 # Change log
 
+## Unpublished changes
+
+- Detect Webpack when using Rails 7 + jsbundling-rails. ([@unikitty37][])
+
 ## master
 
 - Automatic publish to RailsBytes in CI. ([@fargelus][])

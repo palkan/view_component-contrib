@@ -65,7 +65,7 @@ end
 
 say_status :info, "✅ RSpec configured"
 
-USE_WEBPACK = File.directory?("config/webpack")
+USE_WEBPACK = File.directory?("config/webpack") || File.file?("webpack.config.js")
 
 if USE_WEBPACK
   USE_STIMULUS = yes? "Do you use StimulusJS?"
