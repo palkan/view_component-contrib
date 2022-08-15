@@ -42,9 +42,15 @@ class PreviewsIntegrationTest < ActionDispatch::IntegrationTest
     assert_select "div.w-full", text: "Wide"
   end
 
-  def test_preview_with_explicit_template
+  def test_preview_with_explicit_root_template
     get "/rails/view_components/custom_banner/default"
 
     assert_select "div", text: "Custom banner"
+  end
+
+  def test_preview_with_explicit_example_template
+    get "/rails/view_components/custom_banner/example"
+
+    assert_select "div", text: "Example banner"
   end
 end

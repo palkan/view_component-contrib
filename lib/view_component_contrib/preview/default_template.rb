@@ -23,14 +23,22 @@ module ViewComponentContrib
             end
         end
 
-        def preview_example_template_path(...)
+        def preview_example_template_path(example)
           super
         rescue ViewComponent::PreviewTemplateError
-          has_preview_template = preview_paths.find do |path|
+          has_example_preview = preview_paths.find do |path|
+            Dir.glob(File.join(path, preview_name, "previews", "#{example}.html.*")).any?
+          end
+
+          return File.join(preview_name, "previews", example) if has_example_preview
+
+          has_root_preview = preview_paths.find do |path|
             Dir.glob(File.join(path, preview_name, "preview.html.*")).any?
           end
 
-          has_preview_template ? File.join(preview_name, "preview") : default_preview_template
+          return File.join(preview_name, "preview") if has_root_preview
+
+          default_preview_template
         end
       end
     end
