@@ -167,9 +167,7 @@ class Banner::Preview < ApplicationViewComponentPreview
 end
 ```
 
-If you need more control over your template, you can add a custom `preview.html.erb` file.
-**NOTE:** We assume that all examples uses the same `preview.html`. If it's not the case,
-you can use the original `#render_with_template` method.
+If you need more control over your template, you can add a custom `preview.html.*` template (which will be used for all examples in this preview), or even create an example-specific `previews/example.html.*` (e.g. `previews/mobile.html.erb`).
 
 ## Organizing assets (JS, CSS)
 

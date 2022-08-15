@@ -3,4 +3,7 @@
 class CustomBanner::Preview < ApplicationViewComponentPreview
   def default
   end
+
+  def example
+  end
 end
