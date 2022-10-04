@@ -4,6 +4,8 @@
 
 - Detect Webpack when using Rails 7 + jsbundling-rails. ([@unikitty37][])
 
+- Skip autoloading of Preview files when viewing previews is disabled. ([@dhnaranjo][])
+
 ## master
 
 - Automatic publish to RailsBytes in CI. ([@fargelus][])
@@ -20,3 +22,4 @@
 
 [@palkan]: https://github.com/palkan
 [@fargelus]: https://github.com/fargelus
+[@dhnaranjo]: https://github.com/dhnaranjo
