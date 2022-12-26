@@ -3,7 +3,7 @@ say "👋 Welcome to interactive ViewComponent installer and configurator. " \
 
 run "bundle add view_component view_component-contrib --skip-install"
 
-inject_into_file "config/application.rb", "require \"view_component/engine\"\n", before: "\nBundler.require(*Rails.groups)"
+inject_into_file "config/application.rb", "\nrequire \"view_component/engine\"\n", before: "\nBundler.require(*Rails.groups)"
 
 say_status :info, "✅ ViewComponent gems added"
 
