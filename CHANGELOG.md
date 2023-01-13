@@ -1,14 +1,14 @@
 # Change log
 
-## Unpublished changes
+## master
+
+## 0.1.2 (2023-01-13)
 
 - Fix compatibility with sidecar translations. ([@palkan][])
 
 - Detect Webpack when using Rails 7 + jsbundling-rails. ([@unikitty37][])
 
 - Skip autoloading of Preview files when viewing previews is disabled. ([@dhnaranjo][])
-
-## master
 
 - Automatic publish to RailsBytes in CI. ([@fargelus][])
 
