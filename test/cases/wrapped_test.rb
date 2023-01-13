@@ -34,7 +34,7 @@ class WrapperComponentTest < ViewTestCase
       "<div>#{wrapper.component}</div>".html_safe
     end
 
-    assert_empty rendered_component
+    assert_no_selector page, "div"
   end
 
   def test_double_render
