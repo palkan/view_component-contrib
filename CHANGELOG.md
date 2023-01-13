@@ -2,6 +2,8 @@
 
 ## Unpublished changes
 
+- Fix compatibility with sidecar translations. ([@palkan][])
+
 - Detect Webpack when using Rails 7 + jsbundling-rails. ([@unikitty37][])
 
 - Skip autoloading of Preview files when viewing previews is disabled. ([@dhnaranjo][])

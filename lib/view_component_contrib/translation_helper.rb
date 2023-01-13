@@ -22,22 +22,22 @@ module ViewComponentContrib
           end
       end
 
-      def i18n_scope
-        return @i18n_scope if defined?(@i18n_scope)
+      def contrib_i18n_scope
+        return @contrib_i18n_scope if defined?(@contrib_i18n_scope)
 
-        @i18n_scope = name.sub("::Component", "").underscore.split("/")
+        @contrib_i18n_scope = name.sub("::Component", "").underscore.split("/")
       end
 
       def i18n_scope=(val)
         raise ArgumentError, "Must be array" unless val.is_a?(Array)
 
-        @i18n_scope = val.dup.freeze
+        @contrib_i18n_scope = val.dup.freeze
       end
 
       def virtual_path
         @contrib_virtual_path ||= [
           i18n_namespace,
-          *i18n_scope
+          *contrib_i18n_scope
         ].join(".")
       end
     end
