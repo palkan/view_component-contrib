@@ -2,6 +2,10 @@
 
 ## master
 
+## 0.1.3 (2023-02-02)
+
+- Fix release dependencies ([@palkan][])
+
 ## 0.1.2 (2023-01-13)
 
 - Fix compatibility with sidecar translations. ([@palkan][])
