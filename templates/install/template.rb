@@ -20,10 +20,10 @@ application "config.autoload_paths << Rails.root.join(#{root_paths})"
 say_status :info, "✅ ViewComponent paths configured"
 
 file "#{ROOT_PATH}/application_view_component.rb",
-<%= embed_code("./application_view_component.rb") %>
+<%= code("./application_view_component.rb") %>
 
 file "#{ROOT_PATH}/application_view_component_preview.rb",
-<%= embed_code("./application_view_component_preview.rb") %>
+<%= code("./application_view_component_preview.rb") %>
 
 say_status :info, "✅ ApplicationViewComponent and ApplicationViewComponentPreview classes added"
 
@@ -41,7 +41,7 @@ if USE_DRY
 end
 
 initializer "view_component.rb",
-<%= embed_code("./initializer.rb") %>
+<%= code("./initializer.rb") %>
 
 say_status :info, "✅ Added ViewComponent initializer with required patches"
 
@@ -72,14 +72,14 @@ if USE_WEBPACK
 
   if USE_STIMULUS
     file "#{ROOT_PATH}/index.js",
-    <%= embed_code("./index.stimulus.js") %>
+    <%= code("./index.stimulus.js") %>
 
     inject_into_file "#{ROOT_PATH}/application_view_component.rb", before: "\nend" do
-      <%= embed_code("./identifier.rb") %>
+      <%= code("./identifier.rb") %>
     end
   else
     file "#{ROOT_PATH}/index.js",
-    <%= embed_code("./index.js") %>
+    <%= code("./index.js") %>
   end
 
   say_status :info, "✅ Added index.js to load components JS/CSS"
@@ -97,7 +97,7 @@ if USE_WEBPACK
         <<-CODE
 
   require('postcss-modules')({
-  <%= embed("./postcss-modules.js") %>
+  <%= include("./postcss-modules.js") %>
   }),
         CODE
       end
@@ -106,7 +106,7 @@ if USE_WEBPACK
         <<-CODE
 
   'postcss-modules': {
-  <%= embed("./postcss-modules.js") %>
+  <%= include("./postcss-modules.js") %>
   },
         CODE
       end
@@ -114,12 +114,12 @@ if USE_WEBPACK
 
     if !USE_STIMULUS
       inject_into_file "#{ROOT_PATH}/application_view_component.rb", before: "\nend" do
-        <%= embed_code("./identifier.rb") %>
+        <%= code("./identifier.rb") %>
       end
     end
 
     inject_into_file "#{ROOT_PATH}/application_view_component.rb", before: "\nend" do
-      <%= embed_code("./class_for.rb") %>
+      <%= code("./class_for.rb") %>
     end
 
     say_status :info, "✅ postcss-modules configured"
@@ -128,7 +128,7 @@ else
   say "⚠️  See the discussion on how to configure non-Wepback JS/CSS installations: https://github.com/palkan/view_component-contrib/discussions/14"
 end
 
-<%= embed("./generator.rb") %>
+<%= include("./generator.rb") %>
 
 say "Installing gems..."
 

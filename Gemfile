@@ -4,6 +4,8 @@ source "https://rubygems.org"
 
 gem "debug", platform: :mri
 
+gem "rbytes" if RUBY_VERSION >= "3.0.0"
+
 gemspec
 
 eval_gemfile "gemfiles/rubocop.gemfile"

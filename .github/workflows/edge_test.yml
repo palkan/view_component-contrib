@@ -14,29 +14,18 @@ jobs:
     env:
       BUNDLE_JOBS: 4
       BUNDLE_RETRY: 3
+      BUNDLE_GEMFILE: gemfiles/view_component_master.gemfile
       CI: true
     strategy:
       fail-fast: false
       matrix:
-        ruby: ["2.7", "3.0"]
-        gemfile: ["gemfiles/view_component_master.gemfile"]
+        ruby: ["3.0", "3.2"]
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v1
-      with:
-        path: /home/runner/bundle
-        key: bundle-${{ matrix.ruby }}-${{ matrix.gemfile }}-${{ hashFiles(matrix.gemfile) }}-${{ hashFiles('**/*.gemspec') }}
-        restore-keys: |
-          bundle-${{ matrix.ruby }}-${{ matrix.gemfile }}-
+    - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
-    - name: Bundle install
-      run: |
-        bundle config path /home/runner/bundle
-        bundle config --global gemfile ${{ matrix.gemfile }}
-        bundle install
-        bundle update
+        bundler-cache: true
     - name: Run Ruby Next
       run: bundle exec rake nextify
     - name: Run tests

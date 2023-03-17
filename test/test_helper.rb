@@ -32,3 +32,15 @@ require "action_controller/test_case"
 class ViewTestCase < Minitest::Test
   include ViewComponent::TestHelpers
 end
+
+# rbytes is only available for Ruby 3.0+
+begin
+  require "rbytes"
+  require "ruby_bytes/test_case"
+
+  class GeneratorTestCase < RubyBytes::TestCase
+    root File.join(__dir__, "../templates/install")
+    dummy_app File.join(__dir__, "fixtures", "basic_rails_app")
+  end
+rescue LoadError
+end

@@ -14,7 +14,8 @@ AllCops:
     - 'lib/.rbnext/**/*'
     - 'lib/generators/**/templates/*.rb'
     - '.github/**/*'
-    - 'app/templates/**/*'
+    - 'templates/**/*'
+    - 'test/fixtures/basic_rails_app/**/*'
   DisplayCopNames: true
   SuggestExtensions: false
   TargetRubyVersion: 3.0
