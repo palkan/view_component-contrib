@@ -92,10 +92,10 @@ if yes?("Would you like to create a custom generator for your setup? (Recommende
       <<~CODE
         # frozen_string_literal: true
 
-        class <%= class_name %>::Component < <%= parent_class %>
-        <%- if initialize_signature -%>
-          <%= initialize_signature %>
-        <%- end -%>
+        class <%%= class_name %>::Component < <%%= parent_class %>
+        <%%- if initialize_signature -%>
+          <%%= initialize_signature %>
+        <%%- end -%>
         end
       CODE
   else
@@ -119,44 +119,44 @@ if yes?("Would you like to create a custom generator for your setup? (Recommende
       <<~CODE
         # frozen_string_literal: true
 
-        class <%= class_name %>::Component < <%= parent_class %>
-        <%- if initialize_signature -%>
-          def initialize(<%= initialize_signature %>)
-            <%= initialize_body %>
+        class <%%= class_name %>::Component < <%%= parent_class %>
+        <%%- if initialize_signature -%>
+          def initialize(<%%= initialize_signature %>)
+            <%%= initialize_body %>
           end
-        <%- end -%>
+        <%%- end -%>
         end
       CODE
   end
 
   if TEMPLATE_EXT == ".slim"
     file "lib/generators/view_component/templates/component.html.slim.tt", <<~CODE
-    div Add <%= class_name %> template here
+    div Add <%%= class_name %> template here
     CODE
   end
 
   if TEMPLATE_EXT == ".erb"
     file "lib/generators/view_component/templates/component.html.erb.tt", <<~CODE
-    <div>Add <%= class_name %> template here</div>
+    <div>Add <%%= class_name %> template here</div>
     CODE
   end
 
   if TEMPLATE_EXT == ".haml"
     file "lib/generators/view_component/templates/component.html.tt", <<~CODE
-    %div Add <%= class_name %> template here
+    %div Add <%%= class_name %> template here
     CODE
   end
 
   if TEMPLATE_EXT == ""
     file "lib/generators/view_component/templates/component.html.tt", <<~CODE
-    <div>Add <%= class_name %> template here</div>
+    <div>Add <%%= class_name %> template here</div>
     CODE
   end
 
   file "lib/generators/view_component/templates/preview.rb.tt", <<~CODE
   # frozen_string_literal: true
 
-  class <%= class_name %>::Preview < <%= preview_parent_class %>
+  class <%%= class_name %>::Preview < <%%= preview_parent_class %>
     # You can specify the container class for the default template
     # self.container_class = "w-1/2 border border-gray-300"
 
@@ -208,9 +208,9 @@ import "./index.css"
 
   require "rails_helper"
 
-  describe <%= class_name %>::Component do
+  describe <%%= class_name %>::Component do
     let(:options) { {} }
-    let(:component) { <%= class_name %>::Component.new(**options) }
+    let(:component) { <%%= class_name %>::Component.new(**options) }
 
     subject { rendered_component }
 
@@ -227,7 +227,7 @@ import "./index.css"
 
   require "test_helper"
 
-  class <%= class_name %>::ComponentTest < ActiveSupport::TestCase
+  class <%%= class_name %>::ComponentTest < ActiveSupport::TestCase
     include ViewComponent::TestHelpers
 
     def test_renders
@@ -241,7 +241,7 @@ import "./index.css"
     private
 
     def build_component(**options)
-      <%= class_name %>::Component.new(**options)
+      <%%= class_name %>::Component.new(**options)
     end
   end
     CODE
