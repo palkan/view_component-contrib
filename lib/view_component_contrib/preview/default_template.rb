@@ -5,6 +5,12 @@ module ViewComponentContrib
     module DefaultTemplate
       DEFAULT_TEMPLATE = "view_component_contrib/preview"
 
+      MISSING_TEMPLATE_ERROR = if ViewComponent.const_defined?(:MissingPreviewTemplateError)
+        ViewComponent::MissingPreviewTemplateError
+      else
+        ViewComponent::PreviewTemplateError
+      end
+
       def self.included(base)
         base.singleton_class.prepend(ClassMethods)
       end
@@ -25,7 +31,7 @@ module ViewComponentContrib
 
         def preview_example_template_path(example)
           super
-        rescue ViewComponent::PreviewTemplateError
+        rescue MISSING_TEMPLATE_ERROR
           has_example_preview = preview_paths.find do |path|
             Dir.glob(File.join(path, preview_name, "previews", "#{example}.html.*")).any?
           end

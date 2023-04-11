@@ -2,6 +2,10 @@
 
 ## master
 
+- Fix compatibility with new errors classes in view_component.
+
+See [view_component#1701](https://github.com/ViewComponent/view_component/pull/1701).
+
 ## 0.1.3 (2023-02-02)
 
 - Fix release dependencies ([@palkan][])
