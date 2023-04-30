@@ -2,6 +2,8 @@
 
 ## master
 
+## 0.1.4 (2023-04-30)
+
 - Fix compatibility with new errors classes in view_component.
 
 See [view_component#1701](https://github.com/ViewComponent/view_component/pull/1701).
