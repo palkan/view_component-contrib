@@ -5,6 +5,12 @@ module ViewComponentContrib
     module DefaultTemplate
       DEFAULT_TEMPLATE = "view_component_contrib/preview"
 
+      # Make sure view components errors are loaded
+      begin
+        require "view_component/errors"
+      rescue LoadError
+      end
+
       MISSING_TEMPLATE_ERROR = if ViewComponent.const_defined?(:MissingPreviewTemplateError)
         ViewComponent::MissingPreviewTemplateError
       else
