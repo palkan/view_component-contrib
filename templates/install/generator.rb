@@ -212,7 +212,7 @@ import "./index.css"
     let(:options) { {} }
     let(:component) { <%%= class_name %>::Component.new(**options) }
 
-    subject { rendered_component }
+    subject { rendered_content }
 
     it "renders" do
       render_inline(component)
