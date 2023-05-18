@@ -434,6 +434,20 @@ class FlashAlert::Component < ApplicationViewComponent
 end
 ```
 
+## Supporting `.with_collection`
+
+The `.with_collection` method from ViewComponent expects a component class to have the "Component" suffix to correctly infer the parameter name. Since we're using a different naming convention, we need to specify the collection parameter name explicitly. For example:
+
+```ruby
+class PostCard::Component < ApplicationViewComponent
+  with_collection_parameter :post
+
+  option :post
+end
+```
+
+You can add this to following line to your component generator (unless it's already added): `with_collection_parameter :<%= singular_name %>` to always explicitly provide the collection parameter name.
+
 ## Wrapped components
 
 Sometimes we need to wrap a component into a custom HTML container (for positioning or whatever). By default, such wrapping doesn't play well with the `#render?` method because if we don't need a component, we don't need a wrapper.

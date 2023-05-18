@@ -93,6 +93,7 @@ if yes?("Would you like to create a custom generator for your setup? (Recommende
         # frozen_string_literal: true
 
         class <%%= class_name %>::Component < <%%= parent_class %>
+          with_collection_parameter :<%%= singular_name %>
         <%%- if initialize_signature -%>
           <%%= initialize_signature %>
         <%%- end -%>
@@ -120,6 +121,7 @@ if yes?("Would you like to create a custom generator for your setup? (Recommende
         # frozen_string_literal: true
 
         class <%%= class_name %>::Component < <%%= parent_class %>
+          with_collection_parameter :<%%= singular_name %>
         <%%- if initialize_signature -%>
           def initialize(<%%= initialize_signature %>)
             <%%= initialize_body %>
