@@ -9,7 +9,11 @@ module ViewComponentContrib
         previews = Rails.application.config.view_component.preview_paths.flat_map do |path|
           Pathname(path).glob("**/*preview.rb")
         end
-        Rails.autoloaders.each { |autoloader| autoloader.ignore(previews) }
+        if Rails.respond_to?(:autoloaders)
+          Rails.autoloaders.each { |autoloader| autoloader.ignore(previews) }
+        else
+          Rails.application.config.eager_load_paths -= previews
+        end
       end
     end
   end
