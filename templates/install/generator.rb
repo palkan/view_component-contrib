@@ -145,7 +145,7 @@ if yes?("Would you like to create a custom generator for your setup? (Recommende
 
   if TEMPLATE_EXT == ".haml"
     file "lib/generators/view_component/templates/component.html.haml.tt", <<~CODE
-    .div Add #{class_name} template here
+    %div Add #{class_name} template here
     CODE
   end
 
