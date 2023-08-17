@@ -16,7 +16,7 @@ Combustion.initialize! :action_controller, :action_view do
 
   config.view_component.show_previews = true
 
-  config.autoload_paths << Rails.root.join("app", "frontend", "components")
+  config.autoload_paths += [Rails.root.join("app", "frontend", "components")]
   config.view_component.preview_paths << Rails.root.join("app", "frontend", "components")
 end
 
