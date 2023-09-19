@@ -274,4 +274,9 @@ import "./index.css"
       CODE
     end
   end
+
+  # Check if autoload_lib is configured
+  if File.file?("config/application.rb") && File.read("config/application.rb").include?("config.autoload_lib")
+    say_status :info, "⚠️  Make sure you configured autoload_lib to ignore the lib/generators folder"
+  end
 end
