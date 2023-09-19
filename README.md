@@ -47,6 +47,9 @@ bundle exec rails g view_component -h
 **Why adding a custom generator to the project instead of bundling it into the gem?** The generator could only be useful if it fits
 your project needs. The more control you have over the generator the better. Thus, the best way is to make the generator a part of a project.
 
+> [!IMPORTANT]
+> If your application has the `lib/` folder in the autoload paths, make sure you ignored the generated `lib/generators` folder. In Rails 7.1+, you can do this via adding `generators` the `config.autoload_lib` call's `ignore` option. Before, you can use `Rails.autoloaders.main.ignore(...)`.
+
 ## Organizing components, or sidecar pattern extended
 
 ViewComponent provides different ways to organize your components: putting everyhing (Ruby files, templates, etc.) into `app/components` folder or using a _sidecar_ directory for everything but the `.rb` file itself. The first approach could easily result in a directory bloat; the second is better though there is a room for improvement: we can move `.rb` files into sidecar folders as well. Then, we can get rid of the _noisy_ `_component` suffixes. Finally, we can also put previews there (since storing them within the test folder is a little bit confusing):
