@@ -1,4 +1,4 @@
-if yes?("Would you like to create a custom generator for your setup? (Recommended)")
+if yes?("Would you like to create a custom generator for your setup? (y/n)")
   template_choice_to_ext = {"1" => ".erb", "2" => ".haml", "3" => ".slim"}
 
   template = ask "Which template processor do you use? (1) ERB, (2) Haml, (3) Slim, (0) Other"

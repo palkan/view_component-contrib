@@ -28,7 +28,7 @@ say_status :info, "✅ ApplicationViewComponent and ApplicationViewComponentPrev
 USE_RSPEC = File.directory?("spec")
 TEST_ROOT_PATH = USE_RSPEC ? File.join("spec", ROOT_PATH.sub("app/", "")) : File.join("test", ROOT_PATH.sub("app/", ""))
 
-USE_DRY = yes? "Would you like to use dry-initializer in your component classes?"
+USE_DRY = yes? "Would you like to use dry-initializer in your component classes? (y/n)"
 
 if USE_DRY
   run "bundle add dry-initializer --skip-install"
@@ -66,7 +66,7 @@ say_status :info, "✅ RSpec configured"
 USE_WEBPACK = File.directory?("config/webpack") || File.file?("webpack.config.js")
 
 if USE_WEBPACK
-  USE_STIMULUS = yes? "Do you use StimulusJS?"
+  USE_STIMULUS = yes? "Do you use StimulusJS? (y/n)"
 
   if USE_STIMULUS
     file "#{ROOT_PATH}/index.js",
@@ -85,7 +85,7 @@ if USE_WEBPACK
 
   say "⚠️   Don't forget to add #{ROOT_PATH} to `additional_paths` in your `webpacker.yml` (unless your `source_path` already includes it)"
 
-  USE_POSTCSS_MODULES = yes? "Would you like to use postcss-modules to isolate component styles?"
+  USE_POSTCSS_MODULES = yes? "Would you like to use postcss-modules to isolate component styles? (y/n)"
 
   if USE_POSTCSS_MODULES
     run "yarn add postcss-modules"
