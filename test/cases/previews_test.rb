@@ -42,6 +42,12 @@ class PreviewsIntegrationTest < ActionDispatch::IntegrationTest
     assert_select "div.w-full", text: "Wide"
   end
 
+  def test_preview_with_implicit_component_and_content_block
+    get "/rails/view_components/button/danger"
+
+    assert_select "button.btn-danger", text: "Danger"
+  end
+
   def test_preview_with_explicit_root_template
     get "/rails/view_components/custom_banner/default"
 

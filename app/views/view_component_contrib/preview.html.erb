@@ -1,6 +1,10 @@
 <div class="<%= container_class %>">
   <%- if component -%>
-    <%= render component %>
+    <%- if local_assigns[:content_block] -%>
+      <%= render component, &content_block %>
+    <% else %>
+      <%= render component %>
+    <% end %>
   <%- else -%>
   Failed to infer a component from the preview: <%= error %>
   <%- end -%>

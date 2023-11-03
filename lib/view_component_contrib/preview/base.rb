@@ -60,8 +60,14 @@ module ViewComponentContrib
       end
 
       # Shortcut for render_with_template(locals: {component: ...})
-      def render_component(component)
-        render_with(component: component)
+      def render_component(component_or_props = nil, &block)
+        component = if component_or_props.is_a?(::ViewComponent::Base)
+          component_or_props
+        else
+          self.class.name.sub(/Preview$/, "Component").constantize.new(**(component_or_props || {}))
+        end
+
+        render_with(component: component, content_block: block)
       end
     end
   end

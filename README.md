@@ -159,6 +159,14 @@ class Banner::Preview < ApplicationViewComponentPreview
   def default
     # This will use `absolute w-full` for the container class
     render_component Banner::Component.new(text: "Welcome!")
+
+    # or even shorter
+    render_component(text: "Welcome!")
+
+    # you can also pass a content block
+    render_component(kind: :notice) do
+      "Some content"
+    end
   end
 
   def mobile

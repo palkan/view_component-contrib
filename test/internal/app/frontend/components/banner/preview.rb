@@ -14,4 +14,10 @@ class Banner::Preview < ApplicationViewComponentPreview
       container_class: "w-full"
     )
   end
+
+  def with_custom_text
+    render_component do
+      "Custom text"
+    end
+  end
 end

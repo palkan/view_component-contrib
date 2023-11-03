@@ -2,6 +2,35 @@
 
 ## master
 
+- Support content blocks in `#render_component` and `#render_with`. ([@palkan][])
+
+```ruby
+class MyComponent::Preview
+  def default
+    # Now you can pass a block to render_component to render it inside the component:
+    render_component(kind: "info") do
+      "Welcome!"
+    end
+  end
+end
+```
+
+- Support implicit components in `#render_component` helper. ([@palkan][])
+
+```ruby
+class MyComponent::Preview
+  def default
+    # Before
+    render_component(MyComponent::Component.new(foo: "bar"))
+  end
+
+  # After
+  def default
+    render_component(foo: "bar")
+  end
+end
+```
+
 ## 0.1.4 (2023-04-30)
 
 - Fix compatibility with new errors classes in view_component.
