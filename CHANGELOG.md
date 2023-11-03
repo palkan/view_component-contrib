@@ -2,6 +2,8 @@
 
 ## master
 
+## 0.1.5 (2023-11-02)
+
 - Support content blocks in `#render_component` and `#render_with`. ([@palkan][])
 
 ```ruby
