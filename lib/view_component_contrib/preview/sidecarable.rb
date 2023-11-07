@@ -3,7 +3,7 @@
 module ViewComponentContrib
   module Preview
     module Sidecarable
-      PREVIEW_GLOB = "**/preview.rb"
+      PREVIEW_GLOB = "**/{preview.rb,*_preview.rb}"
 
       def self.extended(base)
         base.singleton_class.prepend(ClassMethods)
@@ -17,7 +17,7 @@ module ViewComponentContrib
         end
 
         def preview_name
-          name.chomp("::Preview").underscore
+          name.sub(/(::Preview|Preview)$/, "").underscore
         end
       end
     end

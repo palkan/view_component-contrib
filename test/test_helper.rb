@@ -18,6 +18,7 @@ Combustion.initialize! :action_controller, :action_view do
 
   config.autoload_paths << Rails.root.join("app", "frontend", "components")
   config.view_component.preview_paths << Rails.root.join("app", "frontend", "components")
+  config.view_component.preview_paths << Rails.root.join("app", "frontend", "previews")
 end
 
 class ApplicationController < ActionController::Base

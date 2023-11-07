@@ -43,11 +43,29 @@ module ViewComponentContrib
           end
         end
 
+        # Infer component class name from preview class name:
+        # - Namespace::ButtonPreview => Namespace::Button::Component | Namespace::ButtonComponent | Namespace::Button
+        # - Button::Preview => Button::Component | ButtonComponent | Button
+        def component_class_name
+          @component_class_name ||= begin
+            component_name = name.sub(/(::Preview|Preview)$/, "")
+            [
+              "#{component_name}::Component",
+              "#{component_name}Component",
+              component_name
+            ].find do
+              _1.safe_constantize
+            end
+          end
+        end
+
+        attr_writer :component_class_name
+
         private
 
         def build_component_instance(locals)
           return locals unless locals[:component].nil?
-          locals[:component] = name.sub(/Preview$/, "Component").safe_constantize&.new
+          locals[:component] = component_class_name.safe_constantize&.new
         rescue => e
           locals[:component] = nil
           locals[:error] = e.message
@@ -64,7 +82,7 @@ module ViewComponentContrib
         component = if component_or_props.is_a?(::ViewComponent::Base)
           component_or_props
         else
-          self.class.name.sub(/Preview$/, "Component").constantize.new(**(component_or_props || {}))
+          self.class.component_class_name.constantize.new(**(component_or_props || {}))
         end
 
         render_with(component: component, content_block: block)

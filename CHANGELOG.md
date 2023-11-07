@@ -2,6 +2,20 @@
 
 ## master
 
+- Support preview classes named `<component|partial>_preview.rb`. ([@palkan][])
+
+It's also possible to explicitly specify the component class name for the preview class:
+
+```ruby
+class MyComponentPreview
+  self.component_class_name = "SomeComponent"
+
+  def default
+    render_component
+  end
+end
+```
+
 ## 0.1.5 (2023-11-02)
 
 - Support content blocks in `#render_component` and `#render_with`. ([@palkan][])

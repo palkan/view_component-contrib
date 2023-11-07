@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Button::Preview < ApplicationViewComponentPreview
+class ButtonPreview < ApplicationViewComponentPreview
   def info
     render_component(kind: :info) { "Info" }
   end
