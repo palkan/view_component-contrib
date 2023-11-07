@@ -2,6 +2,8 @@
 
 ## master
 
+## 0.1.6 (2023-11-07)
+
 - Support preview classes named `<component|partial>_preview.rb`. ([@palkan][])
 
 It's also possible to explicitly specify the component class name for the preview class:
