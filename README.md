@@ -181,6 +181,106 @@ end
 
 If you need more control over your template, you can add a custom `preview.html.*` template (which will be used for all examples in this preview), or even create an example-specific `previews/example.html.*` (e.g. `previews/mobile.html.erb`).
 
+## Style variants
+
+Since v0.2.0, we provide a custom extentions to manage CSS classes and their combinations—**Style Variants**. This is especially useful for project using CSS frameworks such as TailwindCSS.
+
+The idea is to define variants schema in the component class and use it to compile the resulting list of CSS classes. (Inspired by [Tailwind Variants](https://www.tailwind-variants.org) and [CVA variants](https://cva.style/docs/getting-started/variants)).
+
+Consider an example:
+
+```ruby
+class ButtonComponent < ViewComponent::Base
+  include ViewComponentContrib::StyleVariants
+
+  style do
+    base {
+      %w[
+        font-medium bg-blue-500 text-white rounded-full
+      ]
+    }
+    variants {
+      color {
+        primary { %w[bg-blue-500 text-white] }
+        secondary { %w[bg-purple-500 text-white] }
+      }
+      size {
+        sm { "text-sm" }
+        md { "text-base" }
+        lg { "px-4 py-3 text-lg" }
+      }
+    }
+    defaults { {size: :md, color: :primary} }
+  end
+
+  attr_reader :size, :color
+
+  def initialize(size: nil, color: nil)
+    @size = size
+    @color = color
+  end
+end
+```
+
+Now, in the template, you can use the `#style` method and pass the variants to it:
+
+```erb
+<button class="<%= style(size:, color:) %>">Click me</button>
+```
+
+Passing `size: :lg` and `color: :secondary` would result in the following HTML:
+
+```html
+<button class="font-medium bg-purple-500 text-white rounded-full px-4 py-3 text-lg">Click me</button>
+```
+
+**NOTE:** If you pass `nil`, the default value would be used.
+
+You can define multiple style sets in a single component:
+
+```ruby
+class ButtonComponent < ViewComponent::Base
+  include ViewComponentContrib::StyleVariants
+
+  # default component styles
+  style do
+    # ...
+  end
+
+  style :image do
+    variants {
+      orient {
+        portrait { "w-32 h-32" }
+        landscape { "w-64 h-32" }
+      }
+    }
+  end
+end
+```
+
+And in the template:
+
+```erb
+<div>
+  <button class="<%= style(size:, theme:) %>">Click me</button>
+  <img src="..." class="<%= style(:image, orient: :portrait) %>">
+</div>
+```
+
+Finally, you can inject into the class list compilation process to add your own logic:
+
+```ruby
+class ButtonComponent < ViewComponent::Base
+  include ViewComponentContrib::StyleVariants
+
+  # You can provide either a proc or any other callable object
+  style_config.postprocess_with do |classes|
+    # classes is an array of CSS classes
+    TailwindMerge.call(classes).join(" ")
+  end
+end
+```
+
 ## Organizing assets (JS, CSS)
 
 **NOTE**: This section assumes the usage of Vite or Webpack. See [this discussion](https://github.com/palkan/view_component-contrib/discussions/14) for other options.

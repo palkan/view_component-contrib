@@ -2,6 +2,8 @@
 
 ## master
 
+- Introduce style variants. ([@palkan][])
+
 - **Require Ruby 2.7+**. ([@palkan][])
 
 - Add system tests to generator. ([@palkan][])
