@@ -32,7 +32,6 @@ The command above:
 - Configure `view_component` paths.
 - Adds `ApplicationViewComponent` and `ApplicationViewComponentPreview` classes.
 - Configures testing framework (RSpec or Minitest).
-- Adds required JS/CSS configuration.
 - **Adds a custom generator to create components**.
 
 The custom generator would allow you to create all the required component files in a single command:
@@ -93,6 +92,8 @@ ActiveSupport.on_load(:view_component) do
   ViewComponent::Preview.extend ViewComponentContrib::Preview::Sidecarable
 end
 ```
+
+You can still continue using preview clases with the `_preview.rb` suffix, they would work as before.
 
 #### Reducing previews boilerplate
 
@@ -182,7 +183,7 @@ If you need more control over your template, you can add a custom `preview.html.
 
 ## Organizing assets (JS, CSS)
 
-**NOTE*: This section assumes the usage of Webpack, Vite or other _frontend_ builder (e.g., not Sprockets).
+**NOTE**: This section assumes the usage of Vite or Webpack. See [this discussion](https://github.com/palkan/view_component-contrib/discussions/14) for other options.
 
 We store JS and CSS files in the same sidecar folder:
 
@@ -203,6 +204,18 @@ import "./index.css"
 
 In the root of the `components` folder we have the `index.js` file, which loads all the components:
 
+- With Vite:
+
+```js
+// With Vite
+import.meta.glob("./**/index.js").forEach((path) => {
+  const mod = await import(path);
+  mod.default();
+});
+```
+
+- With Webpack:
+
 ```js
 // components/index.js
 const context = require.context(".", true, /index.js$/)
@@ -211,12 +224,11 @@ context.keys().forEach(context);
 
 ### Using with StimulusJS
 
-You can define Stimulus controllers right in the `index.js` file using the following approach:
+You can define Stimulus controllers right in the component folder in the `controller.js` file:
 
 ```js
-import "./index.css"
 // We reserve Controller for the export name
-import { Controller as BaseController } from "stimulus";
+import { Controller as BaseController } from "@hotwired/stimulus";
 
 export class Controller extends BaseController {
   connect() {
@@ -225,20 +237,60 @@ export class Controller extends BaseController {
 }
 ```
 
-Then, we need to update the `components/index.js` to automatically register controllers:
+Then, in your Stimulus entrypoint, you can load and register your component controllers as follows:
+
+- With Vite:
 
 ```js
-// We recommend putting Stimulus application instance into its own
-// module, so you can use it for non-component controllers
+import { Application } from "@hotwired/stimulus";
 
-// init/stimulus.js
+const application = Application.start();
+
+// Configure Stimulus development experience
+application.debug = false;
+window.Stimulus = application;
+
+// Generic controllers
+const genericControllers = import.meta.globEager(
+  "../controllers/**/*_controller.js"
+);
+
+for (let path in genericControllers) {
+  let module = genericControllers[path];
+  let name = path
+    .match(/controllers\/(.+)_controller\.js$/)[1]
+    .replaceAll("/", "-")
+    .replaceAll("_", "-");
+
+  application.register(name, module.default);
+}
+
+// Controllers from components
+const controllers = import.meta.globEager(
+  "./../../app/frontend/components/**/controller.js"
+);
+
+for (let path in controllers) {
+  let module = controllers[path];
+  let name = path
+    .match(/app\/frontend\/components\/(.+)\/controller\.js$/)[1]
+    .replaceAll("/", "-")
+    .replaceAll("_", "-");
+  application.register(name, module.default);
+}
+
+export default application;
+```
+
+- With Webpack:
+
+```js
 import { Application } from "stimulus";
 export const application = Application.start();
 
-// components/index.js
-import { application } from "../init/stimulus";
+// ... other controllers
 
-const context = require.context(".", true, /index.js$/)
+const context = require.context("./../../app/frontend/components/", true, /controllers.js$/)
 context.keys().forEach((path) => {
   const mod = context(path);
 
@@ -248,9 +300,10 @@ context.keys().forEach((path) => {
   // Convert path into a controller identifier:
   //   example/index.js -> example
   //   nav/user_info/index.js -> nav--user-info
-  const identifier = path.replace(/^\.\//, '')
-    .replace(/\/index\.js$/, '')
-    .replace(/\//g, '--');
+  const identifier = path
+    .match(/app\/frontend\/components\/(.+)\/controller\.js$/)[1]
+    .replaceAll("/", "-")
+    .replaceAll("_", "-");
 
   application.register(identifier, mod.Controller);
 });
@@ -265,6 +318,8 @@ class ApplicationViewComponent
   def identifier
     @identifier ||= self.class.name.sub("::Component", "").underscore.split("/").join("--")
   end
+
+  alias_method :controller_name, :identifier
 end
 ```
 
@@ -272,7 +327,7 @@ And now in your template:
 
 ```erb
 <!-- component.html -->
-<div data-controller="<%= identifier %>">
+<div data-controller="<%= controller_name %>">
 </div>
 ```
 
@@ -494,11 +549,6 @@ And the template looks like this now:
 ```
 
 You can use the `#wrapped` method on any component inherited from `ApplicationViewComponent` to wrap it automatically:
-
-## ToDo list
-
-- Better preview tools (w/o JS deps 😉).
-- Hotwire-related extensions.
 
 ## License
 

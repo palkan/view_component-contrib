@@ -27,6 +27,7 @@ say_status :info, "✅ ApplicationViewComponent and ApplicationViewComponentPrev
 
 USE_RSPEC = File.directory?("spec")
 TEST_ROOT_PATH = USE_RSPEC ? File.join("spec", ROOT_PATH.sub("app/", "")) : File.join("test", ROOT_PATH.sub("app/", ""))
+TEST_SYSTEM_ROOT_PATH = USE_RSPEC ? File.join("spec", "system", ROOT_PATH.sub("app/", "")) : File.join("test", "system", ROOT_PATH.sub("app/", ""))
 
 USE_DRY = yes? "Would you like to use dry-initializer in your component classes? (y/n)"
 
@@ -63,67 +64,18 @@ end
 
 say_status :info, "✅ RSpec configured"
 
-USE_WEBPACK = File.directory?("config/webpack") || File.file?("webpack.config.js")
+USE_STIMULUS = yes? "Do you use Stimulus? (y/n)"
 
-if USE_WEBPACK
-  USE_STIMULUS = yes? "Do you use StimulusJS? (y/n)"
+if USE_STIMULUS
+  say "⚠️  See the discussion on how to configure your JS bundler to auto-load controllers: https://github.com/palkan/view_component-contrib/discussions/14"
+end
 
-  if USE_STIMULUS
-    file "#{ROOT_PATH}/index.js",
-    <%= code("./index.stimulus.js") %>
+USE_TAILWIND = yes? "Do you use TailwindCSS? (y/n)"
 
-    inject_into_file "#{ROOT_PATH}/application_view_component.rb", before: "\nend" do
-      <%= code("./identifier.rb") %>
-    end
-  else
-    file "#{ROOT_PATH}/index.js",
-    <%= code("./index.js") %>
-  end
-
-  say_status :info, "✅ Added index.js to load components JS/CSS"
-  say "⚠️   Don't forget to import component JS/CSS (#{ROOT_PATH}/index.js) from your application.js entrypoint"
-
-  say "⚠️   Don't forget to add #{ROOT_PATH} to `additional_paths` in your `webpacker.yml` (unless your `source_path` already includes it)"
-
-  USE_POSTCSS_MODULES = yes? "Would you like to use postcss-modules to isolate component styles? (y/n)"
-
-  if USE_POSTCSS_MODULES
-    run "yarn add postcss-modules"
-
-    if File.read("postcss.config.js").match(/plugins:\s*\[/)
-      inject_into_file "postcss.config.js", after: "plugins: [" do
-        <<-CODE
-
-  require('postcss-modules')({
-  <%= include("./postcss-modules.js") %>
-  }),
-        CODE
-      end
-    else
-      inject_into_file "postcss.config.js", after: "plugins: {" do
-        <<-CODE
-
-  'postcss-modules': {
-  <%= include("./postcss-modules.js") %>
-  },
-        CODE
-      end
-    end
-
-    if !USE_STIMULUS
-      inject_into_file "#{ROOT_PATH}/application_view_component.rb", before: "\nend" do
-        <%= code("./identifier.rb") %>
-      end
-    end
-
-    inject_into_file "#{ROOT_PATH}/application_view_component.rb", before: "\nend" do
-      <%= code("./class_for.rb") %>
-    end
-
-    say_status :info, "✅ postcss-modules configured"
-  end
+if USE_TAILWIND
+  # TODO: Use styled variants
 else
-  say "⚠️  See the discussion on how to configure non-Wepback JS/CSS installations: https://github.com/palkan/view_component-contrib/discussions/14"
+  say "⚠️  Check out PostCSS modules to keep your CSS isolated and closer to your components: https://github.com/palkan/view_component-contrib#isolating-css-with-postcss-modules
 end
 
 <%= include("./generator.rb") %>

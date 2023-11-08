@@ -23,16 +23,16 @@ Gem::Specification.new do |s|
 
   s.files = Dir.glob("app/**/*") + Dir.glob("lib/**/*") + %w[README.md LICENSE.txt CHANGELOG.md]
   s.require_paths = ["lib"]
-  s.required_ruby_version = ">= 2.6"
+  s.required_ruby_version = ">= 2.7"
 
   s.add_dependency "view_component"
 
   # When gem is installed from source, we add `ruby-next` as a dependency
   # to auto-transpile source files during the first load
   if ENV["RELEASING_GEM"].nil? && File.directory?(File.join(__dir__, ".git"))
-    s.add_runtime_dependency "ruby-next", ">= 0.12.0"
+    s.add_runtime_dependency "ruby-next", ">= 0.15.0"
   else
-    s.add_dependency "ruby-next-core", ">= 0.12.0"
+    s.add_dependency "ruby-next-core", ">= 0.15.0"
   end
 
   s.add_development_dependency "bundler", ">= 1.15"

@@ -14,6 +14,7 @@ if yes?("Would you like to create a custom generator for your setup? (y/n)")
     source_root File.expand_path("templates", __dir__)
 
     class_option :skip_test, type: :boolean, default: false
+    class_option :skip_system_test, type: :boolean, default: false
     class_option :skip_preview, type: :boolean, default: false
 
     argument :attributes, type: :array, default: [], banner: "attribute"
@@ -30,6 +31,12 @@ if yes?("Would you like to create a custom generator for your setup? (y/n)")
       return if options[:skip_test]
 
       template "component_#{TEST_SUFFIX}.rb", File.join("#{TEST_ROOT_PATH}", class_path, "\#{file_name}_#{TEST_SUFFIX}.rb")
+    end
+
+    def create_system_test_file
+      return if options[:skip_system_test]
+
+      template "component_system_#{TEST_SUFFIX}.rb", File.join("#{TEST_SYSTEM_ROOT_PATH}", class_path, "\#{file_name}_#{TEST_SUFFIX}.rb")
     end
 
     def create_preview_file
@@ -49,31 +56,6 @@ if yes?("Would you like to create a custom generator for your setup? (y/n)")
     end
   end
   CODE
-
-  if USE_WEBPACK
-    inject_into_file "lib/generators/view_component/view_component_generator.rb", after: "class_option :skip_preview, type: :boolean, default: false\n" do
-      <<-CODE
-  class_option :skip_js, type: :boolean, default: false
-  class_option :skip_css, type: :boolean, default: false
-      CODE
-    end
-
-    inject_into_file "lib/generators/view_component/view_component_generator.rb", before: "\n  private" do
-      <<-CODE
-  def create_css_file
-    return if options[:skip_css] || options[:skip_js]
-
-    template "index.css", File.join("#{ROOT_PATH}", class_path, file_name, "index.css")
-  end
-
-  def create_js_file
-    return if options[:skip_js]
-
-    template "index.js", File.join("#{ROOT_PATH}", class_path, file_name, "index.js")
-  end
-      CODE
-    end
-  end
 
   if USE_DRY
     inject_into_file "lib/generators/view_component/view_component_generator.rb", before: "\nend" do
@@ -167,43 +149,6 @@ if yes?("Would you like to create a custom generator for your setup? (y/n)")
   end
   CODE
 
-  if USE_WEBPACK
-    if USE_STIMULUS
-      file "lib/generators/view_component/templates/index.js.tt",
-      <<-CODE
-import "./index.css"
-
-// Add a Stimulus controller for this component.
-// It will automatically registered and its name will be available
-// via #component_name in the component class.
-//
-// import { Controller as BaseController } from "stimulus";
-//
-// export class Controller extends BaseController {
-//   connect() {
-//   }
-//
-//   disconnect() {
-//   }
-// }
-      CODE
-    else
-      file "lib/generators/view_component/templates/index.js.tt", <<~CODE
-      import "./index.css"
-
-      CODE
-    end
-
-    if USE_POSTCSS_MODULES
-      file "lib/generators/view_component/templates/index.css.tt", <<~CODE
-      /* Use component-local class names and add them to HTML via #class_for(name) helper */
-
-      CODE
-    else
-      file "lib/generators/view_component/templates/index.css.tt", ""
-    end
-  end
-
   if USE_RSPEC
     file "lib/generators/view_component/templates/component_spec.rb.tt", <<~CODE
   # frozen_string_literal: true
@@ -223,15 +168,29 @@ import "./index.css"
     end
   end
     CODE
+
+    file "lib/generators/view_component/templates/component_system_spec.rb.tt", <<~CODE
+    # frozen_string_literal: true
+
+    require "rails_helper"
+
+    describe "<%%= file_name %> component" do
+      it "default preview" do
+        visit("/rails/view_components<%%= File.join(class_path, file_name) %>/default")
+
+        # is_expected.to have_text "Hello!"
+        # click_on "Click me"
+        # is_expected.to have_text "Good-bye!"
+      end
+    end
+      CODE
   else
     file "lib/generators/view_component/templates/component_test.rb.tt", <<~CODE
   # frozen_string_literal: true
 
   require "test_helper"
 
-  class <%%= class_name %>::ComponentTest < ActiveSupport::TestCase
-    include ViewComponent::TestHelpers
-
+  class <%%= class_name %>::ComponentTest < ViewComponent::TestCase
     def test_renders
       component = build_component
 
@@ -244,6 +203,22 @@ import "./index.css"
 
     def build_component(**options)
       <%%= class_name %>::Component.new(**options)
+    end
+  end
+    CODE
+
+    file "lib/generators/view_component/templates/component_system_test.rb.tt", <<~CODE
+  # frozen_string_literal: true
+
+  require "application_system_test_case"
+
+  class <%%= class_name %>::ComponentSystemTest < ApplicationSystemTestCase
+    def test_default_preview
+      visit("/rails/view_components<%%= File.join(class_path, file_name) %>/default")
+
+      # assert_text "Hello!"
+      # click_on("Click me!")
+      # assert_text "Good-bye!"
     end
   end
     CODE
@@ -263,17 +238,9 @@ import "./index.css"
           Component:    #{ROOT_PATH}/profile/component.rb
           Template:     #{ROOT_PATH}/profile/component.html#{TEMPLATE_EXT}
           Test:         #{TEST_ROOT_PATH}/profile_component_#{TEST_SUFFIX}.rb
+          System Test:  #{TEST_SYSTEM_ROOT_PATH}/profile_component_#{TEST_SUFFIX}.rb
           Preview:      #{ROOT_PATH}/profile/component_preview.rb
   CODE
-
-  if USE_WEBPACK
-    inject_into_file "lib/generators/view_component/USAGE" do
-      <<-CODE
-          JS:           #{ROOT_PATH}/profile/component.js
-          CSS:          #{ROOT_PATH}/profile/component.css
-      CODE
-    end
-  end
 
   # Check if autoload_lib is configured
   if File.file?("config/application.rb") && File.read("config/application.rb").include?("config.autoload_lib")

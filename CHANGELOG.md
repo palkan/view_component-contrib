@@ -2,6 +2,12 @@
 
 ## master
 
+- **Require Ruby 2.7+**. ([@palkan][])
+
+- Add system tests to generator. ([@palkan][])
+
+- Drop Webpack-related stuff from the generator. ([@palkan][])
+
 ## 0.1.6 (2023-11-07)
 
 - Support preview classes named `<component|partial>_preview.rb`. ([@palkan][])
