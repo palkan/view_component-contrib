@@ -2,6 +2,8 @@
 
 ## master
 
+## 0.2.0 (2023-11-07)
+
 - Introduce style variants. ([@palkan][])
 
 - **Require Ruby 2.7+**. ([@palkan][])
