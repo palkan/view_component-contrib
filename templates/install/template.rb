@@ -75,7 +75,7 @@ USE_TAILWIND = yes? "Do you use TailwindCSS? (y/n)"
 if USE_TAILWIND
   # TODO: Use styled variants
 else
-  say "⚠️  Check out PostCSS modules to keep your CSS isolated and closer to your components: https://github.com/palkan/view_component-contrib#isolating-css-with-postcss-modules
+  say "⚠️  Check out PostCSS modules to keep your CSS isolated and closer to your components: https://github.com/palkan/view_component-contrib#isolating-css-with-postcss-modules"
 end
 
 <%= include("./generator.rb") %>
