@@ -281,6 +281,22 @@ class ButtonComponent < ViewComponent::Base
 end
 ```
 
+### Using with TailwindCSS LSP
+
+To make completions (and other LSP features) work with our DSL, try the following configuration:
+
+```json
+"tailwindCSS.includeLanguages": {
+  "erb": "html",
+  "ruby": "html"
+},
+"tailwindCSS.experimental.classRegex": [
+  "%w\\[([^\\]]*)\\]"
+]
+```
+
+**NOTE:** It will only work with `%w[ ... ]` word arrays, but you can adjust it to your needs.
+
 ## Organizing assets (JS, CSS)
 
 **NOTE**: This section assumes the usage of Vite or Webpack. See [this discussion](https://github.com/palkan/view_component-contrib/discussions/14) for other options.
