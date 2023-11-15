@@ -102,6 +102,13 @@ module ViewComponentContrib
 
         acc
       end
+
+      def dup
+        copy = super
+        copy.instance_variable_set(:@defaults, @defaults.dup)
+        copy.instance_variable_set(:@variants, @variants.dup)
+        copy
+      end
     end
 
     class StyleConfig # :nodoc:
@@ -129,6 +136,12 @@ module ViewComponentContrib
       # Allow defining a custom postprocessor
       def postprocess_with(callable = nil, &block)
         @postprocessor = callable || block
+      end
+
+      def dup
+        copy = super
+        copy.instance_variable_set(:@styles, @styles.dup)
+        copy
       end
 
       private

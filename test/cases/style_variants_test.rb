@@ -73,6 +73,27 @@ class StyledComponentTest < ViewTestCase
     ERB
   end
 
+  class DiffStyleSubcomponent < Component
+    erb_template <<~ERB
+      <div class="<%= style(:sub, mode: :white, size: :md) %>">Hello</div>
+    ERB
+
+    # sibling component name, shouldn't conflict
+    style(:sub) do
+      variants {
+        mode {
+          white { %w[text-white] }
+          red { %w[text-red] }
+        }
+        size {
+          sm { %w[font-sm] }
+          md { %w[font-md] }
+          lg { %w[font-lg] }
+        }
+      }
+    end
+  end
+
   def test_render_variants
     component = Component.new
 
@@ -117,5 +138,19 @@ class StyledComponentTest < ViewTestCase
     render_inline(component)
 
     assert_css "div.karamba-color.karamba-bg.text-md"
+  end
+
+  def test_style_config_inheritance
+    component = SubComponent.new(theme: :secondary, size: :lg, mode: :dark)
+
+    render_inline(component)
+
+    assert_css "a.text-white"
+
+    component = DiffStyleSubcomponent.new
+
+    render_inline(component)
+
+    assert_css "div.text-white.font-md"
   end
 end
