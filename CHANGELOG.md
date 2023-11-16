@@ -2,6 +2,10 @@
 
 ## master
 
+## 0.2.1 (2023-11-16)
+
+- Fix style variants inhertiance. ([@palkan][])
+
 ## 0.2.0 (2023-11-07)
 
 - Introduce style variants. ([@palkan][])
