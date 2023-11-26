@@ -354,6 +354,185 @@ To make completions (and other LSP features) work with our DSL, try the followin
 
 **NOTE:** It will only work with `%w[ ... ]` word arrays, but you can adjust it to your needs.
 
+## HTML attributes propogation
+
+It's common to pass HTML attributes as arguments to a component and use them in the template as is. The number of such _proxied_ attributes may be huge; hence, defining them in the initializer and _rendering_ them in the template becomes too verbose. We provide a custom API to manage HTML attributes.
+
+To begin with, define HTML attributes and their defaults acceptible by the component:
+
+```ruby
+class TextInputComponent < ViewComponent::Base
+  include ViewComponentContrib::HTMLAttributes
+
+  attr_reader :label
+
+  html_attrs(
+    defaults: {
+      placeholder: "Type smth"
+    },
+    allow: %w[placeholder required disabled data]
+  )
+
+  # NOTE: We do not specify html_attrs here, it's done automatically whenever you declare the
+  # corresponding block
+  def initialize(label:)
+    @label = label
+  end
+end
+```
+
+In the template, we can use the following helper to render all the attributes:
+
+```erb
+<label><%= label ></label>
+<input type="text" <%= html_attrs %>/>
+```
+
+Now, we can render the component and pass HTML attributes to it via the `html_attrs` option:
+
+```erb
+<%= render TextInputComponent.new(label: "Name", html_attrs: {placeholder: "Your name", required: true, data: {id: "42"}}) %>
+```
+
+The code above would result in the following HTML:
+
+```html
+<label>Name</label>
+<input type="text" placeholder="Your name" required data-id="42">
+```
+
+**NOTE**: If you want to access HTML attributes as a Ruby Hash in your component class, use the `#raw_html_attrs` method.
+
+The `allowed` option in the `html_attrs` method is optional (but highly recommended). If you pass a not-allowed attribute, an ArgumentError would be raised. You can also specify globally allowed attributes as follows:
+
+```ruby
+class ApplicationComponent < ViewComponentContrib::Base
+  include ViewComponentContrib::HTMLAttributes
+
+  allowed_html_attrs :data, :stimulus, :test_id
+end
+```
+
+You can configure HTML attributes configuration for multiple elements by specifying the identifier:
+
+```ruby
+html_attrs :input, defaults: {required: true}
+```
+
+Then, you can pass and access the corresponding attributes via the `input_attrs` parameter and the `#input_attrs` method, respectively.
+
+### Attribute compilers
+
+You an also define custom Hash-to-HTML compilers for specific keys passed in the attributes. For example, you can define a custom handler for the `stimulus` attribute to automatically generate Stimulus attributes based on the current component name:
+
+```ruby
+class ApplicationComponent < ViewComponentContrib::Base
+  include ViewComponentContrib::HTMLAttributes
+
+  html_attribute_handler :stimulus, :stimulus_attributes
+
+  private
+
+  def stimulus_attributes(params)
+    acc = {}
+    controllers = []
+    actions = []
+
+    params.each do |controller, config|
+      # Attaching a controller
+      if config[:controller] == true
+        controllers << controller
+
+        config[:classes]&.each do |class_id, class_value|
+          acc[stimulus(:class, class_id, controller:)] = class_value
+        end
+
+        config[:values]&.each do |val_id, val|
+          acc[stimulus(:value, val_id, controller:)] = val
+        end
+
+        config[:params]&.each do |param_name, param_value|
+          acc[stimulus(:param, param_name, controller:)] = val
+        end
+      end
+
+      if target = config[:target]
+        acc[stimulus(:target, controller:)] = target
+      end
+
+      if outlet = config[:outlet]
+        acc[stimulus(:outlet, controller:)] = outlet
+      end
+
+      (config[:actions] || Array(config[:action])).each do |action|
+        if action === String
+          actions << stimulus(:action, action, controller:)
+        else
+          actions << stimulus(:action, action.fetch(:action), controller:, **action.slice(:event))
+        end
+      end
+    end
+
+    acc["data-action"] = actions.join(" ") if actions.any?
+    acc["data-controller"] = controllers.join(" ") if controllers.any?
+
+    acc
+  end
+end
+```
+
+Then, you can pass Stimulus attributes as follows:
+
+```erb
+<%= render TextInputComponent.new(
+  label: "Name",
+  html_attrs: {
+    stimulus: {
+      form: {
+        target: "input",
+        actions: [
+          "handleChange",
+          {
+            event: "focus",
+            action: "handleFocus"
+          }
+        ]
+      },
+      list: {
+        outlet: "item"
+      },
+      hideable: {
+        controller: true,
+        action: "toggle",
+        classes: {
+          hidden: "dont-show-me-please"
+        },
+        values: {
+          uniq_id: "1004"
+        },
+        params: {
+          test_id: "t154"
+        }
+      }
+    }
+  }
+) %>
+```
+
+The resulting HTML would be as follows:
+
+```ruby
+<input type="text"
+  data-controller="hideable"
+  data-hideable-hidden-class="dont-show-me-please"
+  data-hideable-uniq-id-value="1004"
+  data-hideable-test-id-param="t154"
+  data-form-target="input"
+  data-action="form#handleChange focus->form#handleFocus hideable#toggle"
+  data-list-outlet="item"
+/>
+```
+
 ## Organizing assets (JS, CSS)
 
 **NOTE**: This section assumes the usage of Vite or Webpack. See [this discussion](https://github.com/palkan/view_component-contrib/discussions/14) for other options.
