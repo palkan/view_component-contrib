@@ -95,6 +95,7 @@ module ViewComponentContrib
         acc = Array(@base_block&.call || [])
 
         @defaults.merge(variants.compact).each do |variant, value|
+          value = cast_value(value)
           variant = @variants.dig(variant, value) || next
           styles = variant.is_a?(::Proc) ? variant.call(**variants) : variant
           acc.concat(Array(styles))
@@ -108,6 +109,17 @@ module ViewComponentContrib
         copy.instance_variable_set(:@defaults, @defaults.dup)
         copy.instance_variable_set(:@variants, @variants.dup)
         copy
+      end
+
+      private
+
+      def cast_value(val)
+        case val
+        when true then :yes
+        when false then :no
+        else
+          val
+        end
       end
     end
 

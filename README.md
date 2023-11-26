@@ -209,15 +209,19 @@ class ButtonComponent < ViewComponent::Base
         md { "text-base" }
         lg { "px-4 py-3 text-lg" }
       }
+      disabled {
+        yes { "opacity-75" }
+      }
     }
     defaults { {size: :md, color: :primary} }
   end
 
-  attr_reader :size, :color
+  attr_reader :size, :color, :disabled
 
-  def initialize(size: nil, color: nil)
+  def initialize(size: nil, color: nil, disabled: false)
     @size = size
     @color = color
+    @disabled = false
   end
 end
 ```
@@ -232,6 +236,12 @@ Passing `size: :lg` and `color: :secondary` would result in the following HTML:
 
 ```html
 <button class="font-medium bg-purple-500 text-white rounded-full px-4 py-3 text-lg">Click me</button>
+```
+
+The `true` / `false` variant value would be converted into the `yes` / `no` variants:
+
+```erb
+<button class="<%= style(size:, color:, disabled: true) %>">Click me</button>
 ```
 
 **NOTE:** If you pass `nil`, the default value would be used.

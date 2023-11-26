@@ -7,7 +7,7 @@ class StyledComponentTest < ViewTestCase
     include ViewComponentContrib::StyleVariants
 
     erb_template <<~ERB
-      <div class="<%= style(theme: theme, size: size) %>">Hello</div>
+      <div class="<%= style(theme: theme, size: size, disabled: disabled) %>">Hello</div>
     ERB
 
     style do
@@ -23,16 +23,20 @@ class StyledComponentTest < ViewTestCase
           md { %w[text-md] }
           lg { %w[text-lg] }
         }
+        disabled {
+          yes { "opacity-50" }
+        }
       }
 
       defaults { {theme: :primary, size: :sm} }
     end
 
-    attr_reader :theme, :size
+    attr_reader :theme, :size, :disabled
 
-    def initialize(theme: :primary, size: :md)
+    def initialize(theme: :primary, size: :md, disabled: false)
       @theme = theme
       @size = size
+      @disabled = disabled
     end
   end
 
@@ -122,11 +126,11 @@ class StyledComponentTest < ViewTestCase
 
     assert_css "div.flex.flex-col.primary-color.primary-bg.text-md"
 
-    component = Component.new(theme: :secondary, size: :md)
+    component = Component.new(theme: :secondary, size: :md, disabled: true)
 
     render_inline(component)
 
-    assert_css "div.secondary-color.secondary-bg.text-md"
+    assert_css "div.secondary-color.secondary-bg.text-md.opacity-50"
   end
 
   def test_render_defaults
