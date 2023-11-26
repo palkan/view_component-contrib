@@ -282,6 +282,32 @@ class ButtonComponent < ViewComponent::Base
 end
 ```
 
+### Dependent (or compound) styles
+
+Sometimes it might be necessary to define complex styling rules, e.g., when a combination of variants requires adding additional styles. That's where usage of Ruby blocks for configuration becomes useful. For example:
+
+```ruby
+style do
+  variants {
+    size {
+      sm { "text-sm" }
+      md { "text-base" }
+      lg { "px-4 py-3 text-lg" }
+    }
+    theme {
+      primary do |size:, **|
+        %w[bg-blue-500 text-white].tap do
+          _1 << "uppercase" if size == :lg
+        end
+      end
+      secondary { %w[bg-purple-500 text-white] }
+    }
+  }
+end
+```
+
+The specified variants are passed as block arguments, so you can implement dynamic styling.
+
 ### Using with TailwindCSS LSP
 
 To make completions (and other LSP features) work with our DSL, try the following configuration:

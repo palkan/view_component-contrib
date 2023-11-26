@@ -94,6 +94,27 @@ class StyledComponentTest < ViewTestCase
     end
   end
 
+  class CompoundComponent < Component
+    style do
+      variants {
+        size {
+          sm { %w[text-sm] }
+          md { %w[text-md] }
+          lg { %w[text-lg] }
+        }
+        theme {
+          primary do |size:, **|
+            %w[primary-color primary-bg].tap do
+              _1 << "uppercase" if size == :lg
+            end
+          end
+
+          secondary { %w[secondary-color secondary-bg] }
+        }
+      }
+    end
+  end
+
   def test_render_variants
     component = Component.new
 
@@ -152,5 +173,19 @@ class StyledComponentTest < ViewTestCase
     render_inline(component)
 
     assert_css "div.text-white.font-md"
+  end
+
+  def test_dynamic_variants
+    component = CompoundComponent.new
+
+    render_inline(component)
+
+    assert_css "div.primary-color.primary-bg.text-md"
+
+    component = CompoundComponent.new(theme: :primary, size: :lg)
+
+    render_inline(component)
+
+    assert_css "div.primary-color.primary-bg.text-lg.uppercase"
   end
 end

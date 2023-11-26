@@ -96,7 +96,7 @@ module ViewComponentContrib
 
         @defaults.merge(variants.compact).each do |variant, value|
           variant = @variants.dig(variant, value) || next
-          styles = variant.is_a?(::Proc) ? variant.call : variant
+          styles = variant.is_a?(::Proc) ? variant.call(**variants) : variant
           acc.concat(Array(styles))
         end
 
