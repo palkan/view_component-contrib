@@ -40,6 +40,28 @@ class StyledComponentTest < ViewTestCase
     end
   end
 
+  def test_render_variants
+    component = Component.new
+
+    render_inline(component)
+
+    assert_css "div.flex.flex-col.primary-color.primary-bg.text-md"
+
+    component = Component.new(theme: :secondary, size: :md, disabled: true)
+
+    render_inline(component)
+
+    assert_css "div.secondary-color.secondary-bg.text-md.opacity-50"
+  end
+
+  def test_render_defaults
+    component = Component.new(theme: nil, size: nil)
+
+    render_inline(component)
+
+    assert_css "div.flex.flex-col.primary-color.primary-bg.text-sm"
+  end
+
   class SubComponent < Component
     erb_template <<~ERB
       <div class="<%= style(:component, theme: theme, size: size) %>">
@@ -67,6 +89,22 @@ class StyledComponentTest < ViewTestCase
     end
   end
 
+  def test_inheritance
+    component = SubComponent.new(theme: :secondary, size: :lg, mode: :dark)
+
+    render_inline(component)
+
+    assert_css "div.secondary-color.secondary-bg.text-lg"
+
+    assert_css "a.text-white"
+
+    component = SubComponent.new(mode: :light)
+
+    render_inline(component)
+
+    assert_css "a.text-black"
+  end
+
   class PostProccesedComponent < Component
     style_config.postprocess_with do |compiled|
       compiled.join(" ").gsub("primary", "karamba")
@@ -75,6 +113,14 @@ class StyledComponentTest < ViewTestCase
     erb_template <<~ERB
       <div class="<%= style("component", theme: theme, size: size) %>">Hello</div>
     ERB
+  end
+
+  def test_postprocessor
+    component = PostProccesedComponent.new
+
+    render_inline(component)
+
+    assert_css "div.karamba-color.karamba-bg.text-md"
   end
 
   class DiffStyleSubcomponent < Component
@@ -98,6 +144,20 @@ class StyledComponentTest < ViewTestCase
     end
   end
 
+  def test_style_config_inheritance
+    component = SubComponent.new(theme: :secondary, size: :lg, mode: :dark)
+
+    render_inline(component)
+
+    assert_css "a.text-white"
+
+    component = DiffStyleSubcomponent.new
+
+    render_inline(component)
+
+    assert_css "div.text-white.font-md"
+  end
+
   class CompoundComponent < Component
     style do
       variants {
@@ -116,71 +176,14 @@ class StyledComponentTest < ViewTestCase
           secondary { %w[secondary-color secondary-bg] }
         }
       }
+
+      compound(size: :sm, theme: :primary) { %w[rounded] }
+      compound(size: :md, theme: :secondary) { "underline" }
     end
   end
 
-  def test_render_variants
-    component = Component.new
-
-    render_inline(component)
-
-    assert_css "div.flex.flex-col.primary-color.primary-bg.text-md"
-
-    component = Component.new(theme: :secondary, size: :md, disabled: true)
-
-    render_inline(component)
-
-    assert_css "div.secondary-color.secondary-bg.text-md.opacity-50"
-  end
-
-  def test_render_defaults
-    component = Component.new(theme: nil, size: nil)
-
-    render_inline(component)
-
-    assert_css "div.flex.flex-col.primary-color.primary-bg.text-sm"
-  end
-
-  def test_inheritance
-    component = SubComponent.new(theme: :secondary, size: :lg, mode: :dark)
-
-    render_inline(component)
-
-    assert_css "div.secondary-color.secondary-bg.text-lg"
-
-    assert_css "a.text-white"
-
-    component = SubComponent.new(mode: :light)
-
-    render_inline(component)
-
-    assert_css "a.text-black"
-  end
-
-  def test_postprocessor
-    component = PostProccesedComponent.new
-
-    render_inline(component)
-
-    assert_css "div.karamba-color.karamba-bg.text-md"
-  end
-
-  def test_style_config_inheritance
-    component = SubComponent.new(theme: :secondary, size: :lg, mode: :dark)
-
-    render_inline(component)
-
-    assert_css "a.text-white"
-
-    component = DiffStyleSubcomponent.new
-
-    render_inline(component)
-
-    assert_css "div.text-white.font-md"
-  end
-
   def test_dynamic_variants
-    component = CompoundComponent.new
+    component = CompoundComponent.new(theme: :primary, size: :md)
 
     render_inline(component)
 
@@ -191,5 +194,17 @@ class StyledComponentTest < ViewTestCase
     render_inline(component)
 
     assert_css "div.primary-color.primary-bg.text-lg.uppercase"
+
+    component = CompoundComponent.new(theme: :primary, size: :sm)
+
+    render_inline(component)
+
+    assert_css "div.primary-color.primary-bg.text-sm.rounded"
+
+    component = CompoundComponent.new(theme: :secondary, size: :md)
+
+    render_inline(component)
+
+    assert_css "div.secondary-color.secondary-bg.text-md.underline"
   end
 end

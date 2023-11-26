@@ -75,6 +75,7 @@ module ViewComponentContrib
         @base_block = nil
         @defaults = {}
         @variants = {}
+        @compounds = {}
 
         instance_eval(&init_block) if init_block
       end
@@ -91,13 +92,26 @@ module ViewComponentContrib
         @variants = VariantBuilder.new(true).build(&block)
       end
 
+      def compound(**variants, &block)
+        @compounds[variants] = block
+      end
+
       def compile(**variants)
         acc = Array(@base_block&.call || [])
 
-        @defaults.merge(variants.compact).each do |variant, value|
+        config = @defaults.merge(variants.compact)
+
+        config.each do |variant, value|
           value = cast_value(value)
           variant = @variants.dig(variant, value) || next
-          styles = variant.is_a?(::Proc) ? variant.call(**variants) : variant
+          styles = variant.is_a?(::Proc) ? variant.call(**config) : variant
+          acc.concat(Array(styles))
+        end
+
+        @compounds.each do |compound, value|
+          next unless compound.all? { |k, v| config[k] == v }
+
+          styles = value.is_a?(::Proc) ? value.call(**config) : value
           acc.concat(Array(styles))
         end
 
@@ -108,6 +122,7 @@ module ViewComponentContrib
         copy = super
         copy.instance_variable_set(:@defaults, @defaults.dup)
         copy.instance_variable_set(:@variants, @variants.dup)
+        copy.instance_variable_set(:@compounds, @compounds.dup)
         copy
       end
 

@@ -318,6 +318,26 @@ end
 
 The specified variants are passed as block arguments, so you can implement dynamic styling.
 
+If you prefer declarative approach, you can use the special `compound` directive. The previous example could be rewritten as follows:
+
+```ruby
+style do
+  variants {
+    size {
+      sm { "text-sm" }
+      md { "text-base" }
+      lg { "px-4 py-3 text-lg" }
+    }
+    theme {
+      primary { %w[bg-blue-500 text-white] }
+      secondary { %w[bg-purple-500 text-white] }
+    }
+  }
+
+  compound(size: :lg, theme: :primary) { %w[uppercase] }
+end
+```
+
 ### Using with TailwindCSS LSP
 
 To make completions (and other LSP features) work with our DSL, try the following configuration:
