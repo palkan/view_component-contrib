@@ -2,6 +2,10 @@
 
 ## master
 
+- Add `compound` styles support. ([@palkan][])
+
+- Support using booleans as style variant values. ([@palkan][])
+
 ## 0.2.1 (2023-11-16)
 
 - Fix style variants inhertiance. ([@palkan][])

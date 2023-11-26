@@ -209,15 +209,19 @@ class ButtonComponent < ViewComponent::Base
         md { "text-base" }
         lg { "px-4 py-3 text-lg" }
       }
+      disabled {
+        yes { "opacity-75" }
+      }
     }
     defaults { {size: :md, color: :primary} }
   end
 
-  attr_reader :size, :color
+  attr_reader :size, :color, :disabled
 
-  def initialize(size: nil, color: nil)
+  def initialize(size: nil, color: nil, disabled: false)
     @size = size
     @color = color
+    @disabled = disabled
   end
 end
 ```
@@ -232,6 +236,12 @@ Passing `size: :lg` and `color: :secondary` would result in the following HTML:
 
 ```html
 <button class="font-medium bg-purple-500 text-white rounded-full px-4 py-3 text-lg">Click me</button>
+```
+
+The `true` / `false` variant value would be converted into the `yes` / `no` variants:
+
+```erb
+<button class="<%= style(size:, color:, disabled: true) %>">Click me</button>
 ```
 
 **NOTE:** If you pass `nil`, the default value would be used.
@@ -307,6 +317,26 @@ end
 ```
 
 The specified variants are passed as block arguments, so you can implement dynamic styling.
+
+If you prefer declarative approach, you can use the special `compound` directive. The previous example could be rewritten as follows:
+
+```ruby
+style do
+  variants {
+    size {
+      sm { "text-sm" }
+      md { "text-base" }
+      lg { "px-4 py-3 text-lg" }
+    }
+    theme {
+      primary { %w[bg-blue-500 text-white] }
+      secondary { %w[bg-purple-500 text-white] }
+    }
+  }
+
+  compound(size: :lg, theme: :primary) { %w[uppercase] }
+end
+```
 
 ### Using with TailwindCSS LSP
 
