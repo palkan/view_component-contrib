@@ -13,7 +13,7 @@ class WrapperComponentTest < ViewTestCase
     alias_method :render?, :should_render
 
     def call
-      "Hello from test"
+      "Hello from test".html_safe
     end
   end
 

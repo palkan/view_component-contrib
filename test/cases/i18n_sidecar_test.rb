@@ -31,9 +31,9 @@ class SidecarTranslationHelperTest < ViewTestCase
 
       def call
         if @source == :sidecar
-          "<div>#{t(".message")}</div>"
+          "<div>#{t(".message")}</div>".html_safe
         else
-          "<div>#{t(".msg")}</div>"
+          "<div>#{t(".msg")}</div>".html_safe
         end
       end
     end

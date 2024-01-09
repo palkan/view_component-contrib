@@ -33,7 +33,7 @@ class TranslationHelperTest < ViewTestCase
       include ViewComponentContrib::TranslationHelper
 
       def call
-        "<div>#{t(".message")}</div>"
+        "<div>#{t(".message")}</div>".html_safe
       end
     end
   end
@@ -44,7 +44,7 @@ class TranslationHelperTest < ViewTestCase
       self.i18n_scope = %w[my_test component]
 
       def call
-        "<div>#{t(".message")}</div>"
+        "<div>#{t(".message")}</div>".html_safe
       end
     end
   end
