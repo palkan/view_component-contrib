@@ -2,6 +2,10 @@
 
 ## master
 
+## 0.2.3 (2024-07-31)
+
+- Fix publishing transpiled files (and bring Ruby 2.7 support back) ([@palkan][])
+
 ## 0.2.2 (2023-11-29)
 
 - Add `compound` styles support. ([@palkan][])
