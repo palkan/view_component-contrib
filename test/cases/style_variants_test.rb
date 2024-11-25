@@ -81,6 +81,14 @@ class StyledComponentTest < ViewTestCase
       }
     end
 
+    style :component do
+      variants {
+        size {
+          lg { %w[text-larger] }
+        }
+      }
+    end
+
     attr_reader :mode
 
     def initialize(mode: :light, **parent_opts)
@@ -94,7 +102,12 @@ class StyledComponentTest < ViewTestCase
 
     render_inline(component)
 
-    assert_css "div.secondary-color.secondary-bg.text-lg"
+    # this fails, the SubComponent lost all variants when it tried to only overwrite the size variant
+    assert_css "div.secondary-color.secondary-bg.text-larger"
+    assert_no_css "div.secondary-color.secondary-bg.text-larger"
+
+    # this on the other hand passes
+    assert_css "div.text-larger"
 
     assert_css "a.text-white"
 
