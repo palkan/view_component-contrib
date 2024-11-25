@@ -105,7 +105,7 @@ class StyledComponentTest < ViewTestCase
     assert_css "a.text-black"
   end
 
-  class PostProccesedComponent < Component
+  class PostProcessedComponent < Component
     style_config.postprocess_with do |compiled|
       compiled.join(" ").gsub("primary", "karamba")
     end
@@ -116,7 +116,7 @@ class StyledComponentTest < ViewTestCase
   end
 
   def test_postprocessor
-    component = PostProccesedComponent.new
+    component = PostProcessedComponent.new
 
     render_inline(component)
 
