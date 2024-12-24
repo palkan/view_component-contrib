@@ -2,6 +2,10 @@
 
 ## master
 
+## 0.2.4 (2024-12-24)
+
+- Add inheritance strategies to style variants ([@omarluq][])
+
 ## 0.2.3 (2024-07-31)
 
 - Fix publishing transpiled files (and bring Ruby 2.7 support back) ([@palkan][])

@@ -292,6 +292,69 @@ class ButtonComponent < ViewComponent::Base
 end
 ```
 
+### Style variants inheritance
+
+Style variants support three inheritance strategies when extending components:
+
+1. `override` (default behavior): Completely replaces parent variants.
+2. `merge` (deep merge): Preserves all variant keys unless explicitly overwritten.
+3. `extend` (shallow merge): Preserves variants unless explicitly overwritten.
+
+Consider an example:
+
+```ruby
+class Parent::Component < ViewComponent::Base
+  include ViewComponentContrib::StyleVariants
+
+  style do
+    variants do
+      size {
+        md { 'text-md' }
+        lg { 'text-lg' }
+      }
+      disabled {
+        yes { "opacity-50" }
+      }
+    end
+  end
+end
+
+# Using override strategy (default)
+class Child::Component < Parent::Component
+  style do
+    variants do
+      size {
+        lg { 'text-larger' }
+      }
+    end
+  end
+end
+
+# Using merge strategy
+class Child::Component < Parent::Component
+  style do
+    variants(strategy: :merge) do
+      size {
+        lg { 'text-larger' }
+      }
+    end
+  end
+end
+
+# Using extend strategy
+class Child::Component < Parent::Component
+  style do
+    variants(strategy: :extend) do
+      size {
+        lg { 'text-larger' }
+      }
+    end
+  end
+end
+```
+
+In this example, the `override` strategy will only keep the `size.lg` variant, dropping all others. The `merge` strategy preserves all variants and their keys, only replacing the `size.lg` value. The `extend` strategy keeps all variants but replaces all keys of the overwritten `size` variant.
+
 ### Dependent (or compound) styles
 
 Sometimes it might be necessary to define complex styling rules, e.g., when a combination of variants requires adding additional styles. That's where usage of Ruby blocks for configuration becomes useful. For example:
