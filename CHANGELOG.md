@@ -2,6 +2,9 @@
 
 ## master
 
+- Add special `class:` variant to `style` helper. For appending classes.
+  Inspired by https://cva.style/docs/getting-started/extending-components
+
 ## 0.2.3 (2024-07-31)
 
 - Fix publishing transpiled files (and bring Ruby 2.7 support back) ([@palkan][])
