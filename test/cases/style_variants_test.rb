@@ -105,7 +105,61 @@ class StyledComponentTest < ViewTestCase
     assert_css "a.text-black"
   end
 
-  class PostProccesedComponent < Component
+  class SubComponentMerge < Component
+    erb_template <<~ERB
+      <div class="<%= style(:component, theme: theme, size: size, disabled: disabled) %>">Hello</div>
+    ERB
+    style :component do
+      base { "cursor-pointer" }
+
+      variants(strategy: :merge) {
+        size {
+          lg { %w[text-larger] }
+        }
+      }
+    end
+  end
+
+  def test_inheritance_with_merge_strategy
+    # test new lg style
+    component = SubComponentMerge.new(theme: :secondary, size: :lg)
+    render_inline(component)
+    assert_css "div.secondary-color.secondary-bg.text-larger"
+
+    # test inherited md styule
+    component = SubComponentMerge.new(theme: :secondary, size: :md)
+    render_inline(component)
+    assert_css "div.secondary-color.secondary-bg.text-md"
+  end
+
+  class SubComponentExtend < Component
+    erb_template <<~ERB
+      <div class="<%= style(:component, theme: theme, size: size, disabled: disabled) %>">Hello</div>
+    ERB
+    style :component do
+      base { "cursor-pointer" }
+
+      variants(strategy: :extend) {
+        size {
+          lg { %w[text-larger] }
+        }
+      }
+    end
+  end
+
+  def test_inheritance_with_extend_strategy
+    # test new lg style
+    component = SubComponentExtend.new(theme: :secondary, size: :lg)
+    render_inline(component)
+    assert_css "div.secondary-color.secondary-bg.text-larger"
+
+    # test does not inherit md styule
+    component = SubComponentExtend.new(theme: :secondary, size: :md)
+    render_inline(component)
+    assert_no_css "div.secondary-color.secondary-bg.text-md"
+  end
+
+  class PostProcessedComponent < Component
     style_config.postprocess_with do |compiled|
       compiled.join(" ").gsub("primary", "karamba")
     end
@@ -116,7 +170,7 @@ class StyledComponentTest < ViewTestCase
   end
 
   def test_postprocessor
-    component = PostProccesedComponent.new
+    component = PostProcessedComponent.new
 
     render_inline(component)
 

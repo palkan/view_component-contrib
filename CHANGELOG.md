@@ -2,6 +2,9 @@
 
 ## master
 
+
+- Add inheritance strategies to style variants ([@omarluq][])
+
 - Add special `class:` variant to `style` helper. For appending classes.
   Inspired by https://cva.style/docs/getting-started/extending-components
 

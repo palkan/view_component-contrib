@@ -77,7 +77,10 @@ module ViewComponentContrib
         @variants = {}
         @compounds = {}
 
-        instance_eval(&init_block) if init_block
+        return unless init_block
+
+        @init_block = init_block
+        instance_eval(&init_block)
       end
 
       def base(&block)
@@ -88,8 +91,34 @@ module ViewComponentContrib
         @defaults = block.call.freeze
       end
 
-      def variants(&block)
-        @variants = VariantBuilder.new(true).build(&block)
+      def variants(strategy: :override, &block)
+        variants = build_variants(&block)
+        @variants = handle_variants(variants, strategy)
+      end
+
+      def build_variants(&block)
+        VariantBuilder.new(true).build(&block)
+      end
+
+      def handle_variants(variants, strategy)
+        return variants if strategy == :override
+
+        parent_variants = find_parent_variants
+        return variants unless parent_variants
+
+        return parent_variants.deep_merge(variants) if strategy == :merge
+
+        parent_variants.merge(variants) if strategy == :extend
+      end
+
+      def find_parent_variants
+        parent_component = @init_block.binding.receiver.superclass
+        return unless parent_component.respond_to?(:style_config)
+
+        parent_config = parent_component.style_config
+        default_parent_style = parent_component.default_style_name
+        parent_style_set = parent_config.instance_variable_get(:@styles)[default_parent_style.to_sym]
+        parent_style_set.instance_variable_get(:@variants).deep_dup
       end
 
       def compound(**variants, &block)
