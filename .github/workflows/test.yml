@@ -20,8 +20,10 @@ jobs:
         ruby: ["3.0"]
         gemfile: ["gemfiles/rails7.gemfile"]
         include:
-        - ruby: "3.1"
+        - ruby: "3.4"
           gemfile: "gemfiles/railsmaster.gemfile"
+        - ruby: "3.3"
+          gemfile: "gemfiles/rails8.gemfile"
         - ruby: "2.7"
           gemfile: "gemfiles/rails6.gemfile"
     steps:
