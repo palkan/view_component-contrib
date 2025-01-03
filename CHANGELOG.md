@@ -2,6 +2,7 @@
 
 ## master
 
+## 0.2.4 (2025-01-03)
 
 - Add inheritance strategies to style variants ([@omarluq][])
 

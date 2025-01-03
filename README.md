@@ -318,8 +318,8 @@ class Parent::Component < ViewComponent::Base
   style do
     variants do
       size {
-        md { 'text-md' }
-        lg { 'text-lg' }
+        md { "text-md" }
+        lg { "text-lg" }
       }
       disabled {
         yes { "opacity-50" }
@@ -333,7 +333,7 @@ class Child::Component < Parent::Component
   style do
     variants do
       size {
-        lg { 'text-larger' }
+        lg { "text-larger" }
       }
     end
   end
@@ -344,7 +344,7 @@ class Child::Component < Parent::Component
   style do
     variants(strategy: :merge) do
       size {
-        lg { 'text-larger' }
+        lg { "text-larger" }
       }
     end
   end
@@ -355,7 +355,7 @@ class Child::Component < Parent::Component
   style do
     variants(strategy: :extend) do
       size {
-        lg { 'text-larger' }
+        lg { "text-larger" }
       }
     end
   end
