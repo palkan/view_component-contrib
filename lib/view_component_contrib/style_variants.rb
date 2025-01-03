@@ -144,6 +144,8 @@ module ViewComponentContrib
           acc.concat(Array(styles))
         end
 
+        acc.concat(Array(config[:class]))
+        acc.concat(Array(config[:class_name]))
         acc
       end
 

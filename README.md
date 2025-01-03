@@ -277,6 +277,15 @@ And in the template:
 </div>
 ```
 
+You can also add additional classes through thr `style` method using the special `class:` variant, like so:
+
+```erb
+<div>
+  <button class="<%= style(size:, theme:, class: 'extra-class') %>">Click me</button>
+  <img src="..." class="<%= style(:image, orient: :portrait) %>">
+</div>
+```
+
 Finally, you can inject into the class list compilation process to add your own logic:
 
 ```ruby

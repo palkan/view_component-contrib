@@ -261,4 +261,21 @@ class StyledComponentTest < ViewTestCase
 
     assert_css "div.secondary-color.secondary-bg.text-md.underline"
   end
+
+  class AdditionalClassesComponent < Component
+    erb_template <<~ERB
+      <div class="<%= style(class: 'bg-blue-500') %>">Hello</div>
+    ERB
+
+    style do
+    end
+  end
+
+  def test_additional_classes
+    component = AdditionalClassesComponent.new
+
+    render_inline(component)
+
+    assert_css "div.bg-blue-500"
+  end
 end
