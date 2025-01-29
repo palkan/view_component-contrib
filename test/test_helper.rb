@@ -6,6 +6,8 @@ require "ruby-next/language/runtime" unless ENV["CI"]
 
 ENV["RAILS_ENV"] = "test"
 
+# https://github.com/rails/rails/issues/54263
+require "logger"
 require "combustion"
 require "view_component_contrib"
 
