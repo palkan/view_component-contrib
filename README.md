@@ -761,6 +761,8 @@ You can add this to following line to your component generator (unless it's alre
 
 ## Wrapped components
 
+### Wrapping a single component
+
 Sometimes we need to wrap a component into a custom HTML container (for positioning or whatever). By default, such wrapping doesn't play well with the `#render?` method because if we don't need a component, we don't need a wrapper.
 
 To solve this problem, we introduce a special `ViewComponentContrib::WrapperComponent` class: it takes any component as the only argument and accepts a block during rendering to define a wrapping HTML. And it renders only if the _inner component_'s `#render?` method returns true.
@@ -793,7 +795,45 @@ And the template looks like this now:
 <%- end -%>
 ```
 
-You can use the `#wrapped` method on any component inherited from `ApplicationViewComponent` to wrap it automatically:
+You can use the `#wrapped` method on any component inherited from `ApplicationViewComponent` to wrap it automatically.
+
+### Wrapping multiple components
+
+Sometimes a wrapper needs to wrap multiple components, and only render if at least one of the inner components renders.
+
+For example, consider a container element with a title and two components.
+
+```erb
+<div class="flex flex-col gap-4">
+  <h3>Title</h3>
+  <div class="flex gap-2">
+    <%= render ExampleA::Component %>
+    <%= render ExampleB::Component %>
+  </div>
+</div>
+```
+
+Both components have their own `#render?` method. If neither of the components render, then we don't want to render the container either.
+
+We introduce a special `ViewComponentContrib::ShowIfWrapperComponent` class that wraps around the container. We can declare the conditional parts of the markup with the `.show_if` block.
+
+```erb
+<%= render ViewComponentContrib::ShowIfWrapperComponent.new do |wrapper| %>
+  <div class="flex flex-col gap-4">
+    <h3>Title</h3>
+    <div class="flex gap-2">
+      <%= wrapper.show_if do %>
+        <%= render ExampleA::Component %>
+      <%- end ->
+      <%= wrapper.show_if do %>
+        <%= render ExampleB::Component %>
+      <%- end ->
+    </div>
+  </div>
+<%- end -%>
+```
+
+If _at least one_ of the `.show_if` blocks renders something, all of the content within the wrapper component is rendered. Otherwise, if nothing is rendered in _any_ of the blocks, the wrapper component doesn't render.
 
 ## License
 
