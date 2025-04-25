@@ -824,13 +824,13 @@ We introduce a special `ViewComponentContrib::ShowIfWrapperComponent` class that
     <div class="flex gap-2">
       <%= wrapper.show_if do %>
         <%= render ExampleA::Component %>
-      <%- end ->
+      <%- end -%>
       <%= wrapper.show_if do %>
         <%= render ExampleB::Component %>
-      <%- end ->
+      <%- end -%>
     </div>
   </div>
-<%- end ->
+<%- end -%>
 ```
 
 If nothing is rendered in _any_ of the blocks, the wrapper component doesn't render. Otherwise, if _at least one_ of the `.show_if` blocks renders something, all of the content within the wrapper component is rendered.
