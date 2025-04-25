@@ -830,7 +830,7 @@ We introduce a special `ViewComponentContrib::ShowIfWrapperComponent` class that
       <%- end ->
     </div>
   </div>
-<%- end -%>
+<%- end ->
 ```
 
 If nothing is rendered in _any_ of the blocks, the wrapper component doesn't render. Otherwise, if _at least one_ of the `.show_if` blocks renders something, all of the content within the wrapper component is rendered.
