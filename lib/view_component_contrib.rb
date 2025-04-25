@@ -11,6 +11,7 @@ module ViewComponentContrib
   autoload :TranslationHelper, "view_component_contrib/translation_helper"
   autoload :WrapperComponent, "view_component_contrib/wrapper_component"
   autoload :WrappedHelper, "view_component_contrib/wrapped_helper"
+  autoload :ShowIfWrapperComponent, "view_component_contrib/show_if_wrapper_component"
   autoload :StyleVariants, "view_component_contrib/style_variants"
 
   autoload :Base, "view_component_contrib/base"
