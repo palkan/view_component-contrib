@@ -12,7 +12,6 @@ module ViewComponentContrib
   autoload :WrapperComponent, "view_component_contrib/wrapper_component"
   autoload :WrappedHelper, "view_component_contrib/wrapped_helper"
   autoload :WrappedInHelper, "view_component_contrib/wrapped_in_helper"
-  autoload :ShowIfWrapperComponent, "view_component_contrib/show_if_wrapper_component"
   autoload :StyleVariants, "view_component_contrib/style_variants"
 
   autoload :Base, "view_component_contrib/base"
