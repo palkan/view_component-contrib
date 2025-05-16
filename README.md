@@ -872,7 +872,7 @@ You can place any content inside a wrapper component. You can even nest wrapper 
 <%- end -%>
 ```
 
-You can also use the `#fallback` method on a wrapper component to render a block _only_ if none of the registered components render.
+You can also use the `#placeholder` method on a wrapper component to render a block _only_ if none of the registered components render.
 
 ```erb
 <%= render ViewComponentContrib::WrapperComponent.new do |wrapper| %>
@@ -885,7 +885,7 @@ You can also use the `#fallback` method on a wrapper component to render a block
   </div>
 
   <!-- Will only render if neither `ExampleA` nor `ExampleB` render -->
-  <%- wrapper.fallback do -%>
+  <%- wrapper.placeholder do -%>
     <span>Examples coming soon!</span>
   <%- end -%>
 <%- end -%>

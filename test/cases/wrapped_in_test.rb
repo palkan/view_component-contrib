@@ -150,14 +150,14 @@ class WrappedInTest < ViewTestCase
     end
   end
 
-  def test_fallback_does_not_render_when_any_inner_component_renders
+  def test_placeholder_does_not_render_when_any_inner_component_renders
     inner_component = Component.new
     wrapper_component = ViewComponentContrib::WrapperComponent.new
 
     render_inline(wrapper_component) do |wrapper|
       "<h3>Title</h3>" \
       "<div>#{render_inline(inner_component.wrapped_in(wrapper)).to_html}</div>" \
-      "#{wrapper.fallback { "<div>Nothing to show</div>".html_safe }}".html_safe
+      "#{wrapper.placeholder { "<div>Nothing to show</div>".html_safe }}".html_safe
     end
 
     assert_selector page, "h3", count: 1, text: "Title"
@@ -165,14 +165,14 @@ class WrappedInTest < ViewTestCase
     assert_no_selector page, "div", text: "Nothing to show"
   end
 
-  def test_fallback_renders_when_no_inner_component_renders
+  def test_placeholder_renders_when_no_inner_component_renders
     inner_component = Component.new(should_render: false)
     wrapper_component = ViewComponentContrib::WrapperComponent.new
 
     render_inline(wrapper_component) do |wrapper|
       "<h3>Title</h3>" \
       "<div>#{render_inline(inner_component.wrapped_in(wrapper)).to_html}</div>" \
-      "#{wrapper.fallback { "<div>Nothing to show</div>".html_safe }}".html_safe
+      "#{wrapper.placeholder { "<div>Nothing to show</div>".html_safe }}".html_safe
     end
 
     assert_no_selector page, "h3", count: 1, text: "Title"
