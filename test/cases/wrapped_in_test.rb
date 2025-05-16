@@ -17,6 +17,27 @@ class WrappedInTest < ViewTestCase
     end
   end
 
+  class NonViewComponent
+    include ViewComponentContrib::WrappedInHelper
+
+    def call
+      "Hello from test".html_safe
+    end
+  end
+
+  def test_renders_when_inner_component_renders
+    inner_component = Component.new
+    wrapper_component = ViewComponentContrib::WrapperComponent.new
+
+    render_inline(wrapper_component) do |wrapper|
+      "<h3>Title</h3>" \
+      "<div>#{render_inline(inner_component.wrapped_in(wrapper)).to_html}</div>".html_safe
+    end
+
+    assert_selector page, "h3", count: 1, text: "Title"
+    assert_selector page, "div", text: "Hello from test", count: 1
+  end
+
   def test_renders_when_two_inner_components_render
     inner_component_a = Component.new
     inner_component_b = Component.new
@@ -122,5 +143,23 @@ class WrappedInTest < ViewTestCase
 
     assert_no_selector page, "h3"
     assert_no_selector page, "div"
+  end
+
+  def test_raises_error_when_passing_non_wrapper_component
+    component_a = Component.new
+    component_b = Component.new
+
+    assert_raises(ArgumentError) do
+      component_a.wrapped_in(component_b)
+    end
+  end
+
+  def test_raises_error_when_passing_non_view_component
+    non_view_component = NonViewComponent.new
+    wrapper_component = ViewComponentContrib::WrapperComponent.new
+
+    assert_raises(ArgumentError) do
+      non_view_component.wrapped_in(wrapper_component)
+    end
   end
 end

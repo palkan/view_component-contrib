@@ -14,6 +14,12 @@ module ViewComponentContrib
       end
     end
 
+    class ComponentPresentError < StandardError
+      def initialize
+        super("A wrapper component cannot register a component if it already has a component from the constructor")
+      end
+    end
+
     attr_reader :component_instance, :registered_components
 
     # We need to touch `content` before the `render?` method is called,
@@ -21,7 +27,7 @@ module ViewComponentContrib
     # This overrides the default lazy evaluation of `content` in ViewComponent,
     # but it's necessary for the wrapper to work properly.
     def before_render
-      content
+      content if component_instance.blank?
     end
 
     def initialize(component = nil)
@@ -55,7 +61,7 @@ module ViewComponentContrib
     # Register a component to be rendered within the wrapper.
     # If no registered components render, the wrapper itself won't be rendered.
     def register(component)
-      raise ArgumentError, "Wrapper already has a component" if component_instance.present?
+      raise ComponentPresentError if component_instance.present?
       raise ArgumentError, "Expected a ViewComponent" unless component.is_a?(ViewComponent::Base)
 
       registered_components << component
