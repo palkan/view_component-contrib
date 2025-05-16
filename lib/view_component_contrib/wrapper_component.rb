@@ -20,7 +20,7 @@ module ViewComponentContrib
       end
     end
 
-    attr_reader :component_instance, :registered_components
+    attr_reader :component_instance, :registered_components, :fallback_block
 
     # We need to touch `content` before the `render?` method is called,
     # otherwise children calling `.wrapped_in` won't be registered.
@@ -37,14 +37,17 @@ module ViewComponentContrib
 
     def render?
       return component_instance.render? if component_instance.present?
+      return true if render_from_registered_components?
 
-      registered_components.any?(&:render?)
+      @fallback_block.present?
     end
 
     # Simply return the contents of the block passed to #render_component.
     # (Alias couldn't be used here 'cause ViewComponent check for the method presence when
     # choosing between #call and a template.)
     def call
+      return view_context.capture(&@fallback_block) if render_fallback?
+
       content
     end
 
@@ -65,6 +68,31 @@ module ViewComponentContrib
       raise ArgumentError, "Expected a ViewComponent" unless component.is_a?(ViewComponent::Base)
 
       registered_components << component
+    end
+
+    # Register a fallback block:  `wrapper.fallback { "Nothing to show" }`
+    # The block is only emitted when:
+    #   - no component instance was supplied, AND
+    #   - every registered component’s `render?` returns false
+    def fallback(&block)
+      raise ArgumentError, "Block required" unless block
+
+      @fallback_block = block
+      nil
+    end
+
+    private
+
+    # Memoize the result of registered components' render? calls as they
+    # could be expensive
+    def render_from_registered_components?
+      @render_from_registered_components ||= registered_components.any?(&:render?)
+    end
+
+    def render_fallback?
+      @fallback_block.present? &&
+        component_instance.blank? &&
+        !render_from_registered_components?
     end
   end
 end

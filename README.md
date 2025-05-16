@@ -872,6 +872,25 @@ You can place any content inside a wrapper component. You can even nest wrapper 
 <%- end -%>
 ```
 
+You can also use the `#fallback` method on a wrapper component to render a block _only_ if none of the registered components render.
+
+```erb
+<%= render ViewComponentContrib::WrapperComponent.new do |wrapper| %>
+  <div class="flex flex-col gap-4">
+    <h3>Title</h3>
+    <div class="flex gap-2">
+      <%= render ExampleA::Component.new.wrapped_in(wrapper) %>
+      <%= render ExampleB::Component.new.wrapped_in(wrapper) %>
+    </div>
+  </div>
+
+  <!-- Will only render if neither `ExampleA` nor `ExampleB` render -->
+  <%- wrapper.fallback do -%>
+    <span>Examples coming soon!</span>
+  <%- end -%>
+<%- end -%>
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
