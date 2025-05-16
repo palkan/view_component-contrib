@@ -815,25 +815,54 @@ For example, consider a container element with a title and two components.
 
 Both components have their own `#render?` method. If neither of the components render, then we don't want to render the container either.
 
-We introduce a special `ViewComponentContrib::ShowIfWrapperComponent` class that wraps around the container. We can declare the conditional parts of the markup with the `.show_if` block.
+We introduce the `#wrapped_in` method that can be used on children of a `ViewComponentContrib::WrapperComponent`. Calling `#wrapped_in` on a child component will _register_ that component with the wrapper. The wrapper and its contents will only render if _at least one_ of the registered components' `#render?` methods returns true.
 
 ```erb
-<%= render ViewComponentContrib::ShowIfWrapperComponent.new do |wrapper| %>
+<%= render ViewComponentContrib::WrapperComponent.new do |wrapper| %>
   <div class="flex flex-col gap-4">
     <h3>Title</h3>
     <div class="flex gap-2">
-      <%= wrapper.show_if do %>
-        <%= render ExampleA::Component %>
-      <%- end -%>
-      <%= wrapper.show_if do %>
-        <%= render ExampleB::Component %>
-      <%- end -%>
+      <%= render ExampleA::Component.new.wrapped_in(wrapper) %>
+      <%= render ExampleB::Component.new.wrapped_in(wrapper) %>
     </div>
   </div>
 <%- end -%>
 ```
 
-If nothing is rendered in _any_ of the blocks, the wrapper component doesn't render. Otherwise, if _at least one_ of the `.show_if` blocks renders something, all of the content within the wrapper component is rendered.
+You can place any content inside a wrapper component.
+
+You can even nest wrapper components:
+
+```erb
+<% # Will only render if at least one of the inner wrappers renders %>
+<%= render ViewComponentContrib::WrapperComponent.new do |wrapper| %>
+  <div class="flex flex-col gap-4">
+    <h3>Examples</h3>
+
+    <% # Will only render if `FooExampleA` or `FooExampleB` renders %>
+    <%= render ViewComponentContrib::WrapperComponent.new.wrapped_in(wrapper) do |foo_wrapper| %>
+      <div class="flex flex-col gap-4">
+        <h4>Foo Examples</h4>
+        <div class="flex gap-2">
+          <%= render FooExampleA::Component.new.wrapped_in(foo_wrapper) %>
+          <%= render FooExampleB::Component.new.wrapped_in(foo_wrapper) %>
+        </div>
+      </div>
+    <%- end -%>
+
+    <% # Will only render if `BarExampleA` or `BarExampleB` renders %>
+    <%= render ViewComponentContrib::WrapperComponent.new.wrapped_in(wrapper) do |bar_wrapper| %>
+      <div class="flex flex-col gap-4">
+        <h4>Bar Examples</h4>
+        <div class="flex gap-2">
+          <%= render BarExampleA::Component.new.wrapped_in(bar_wrapper) %>
+          <%= render BarExampleB::Component.new.wrapped_in(bar_wrapper) %>
+        </div>
+      </div>
+    <%- end -%>
+  </div>
+<%- end -%>
+```
 
 ## License
 
