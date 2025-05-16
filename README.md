@@ -815,7 +815,7 @@ For example, consider a container element with a title and two components.
 
 Both components have their own `#render?` method. If neither of the components render, then we don't want to render the container either.
 
-We introduce the `#wrapped_in` method that can be used on children of a `ViewComponentContrib::WrapperComponent`. Calling `#wrapped_in` on a child component will _register_ that component with the wrapper. The wrapper and its contents will only render if _at least one_ of the registered components' `#render?` methods returns true.
+We introduce the `#wrapped_in` method that can be called on any component rendered within a `ViewComponentContrib::WrapperComponent`. Calling `#wrapped_in` on a child component will _register_ that component with the wrapper. The wrapper and its contents will only render if _at least one_ of the registered components' `#render?` methods returns true.
 
 ```erb
 <%= render ViewComponentContrib::WrapperComponent.new do |wrapper| %>
@@ -829,9 +829,17 @@ We introduce the `#wrapped_in` method that can be used on children of a `ViewCom
 <%- end -%>
 ```
 
-You can place any content inside a wrapper component.
+To use the method, include the helper in your base ViewComponent class:
 
-You can even nest wrapper components:
+```ruby
+class ApplicationViewComponent < ViewComponent::Base
+  # adds #wrapped_in method
+  # NOTE: Already included into ViewComponentContrib::Base
+  include ViewComponentContrib::WrappedInHelper
+end
+```
+
+You can place any content inside a wrapper component. You can even nest wrapper components:
 
 ```erb
 <% # Will only render if at least one of the inner wrappers renders %>
