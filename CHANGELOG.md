@@ -2,7 +2,7 @@
 
 ## master
 
-- Add `ShowIfWrapperComponent` for wrappers that are conditional on multiple child components
+- Add `#wrapped_in` helper to support wrappers that are conditional on multiple child components
 
 ## 0.2.4 (2025-01-03)
 
