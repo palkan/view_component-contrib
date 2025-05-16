@@ -842,12 +842,12 @@ end
 You can place any content inside a wrapper component. You can even nest wrapper components:
 
 ```erb
-<% # Will only render if at least one of the inner wrappers renders %>
+<!-- Will only render if at least one of the inner wrappers renders -->
 <%= render ViewComponentContrib::WrapperComponent.new do |wrapper| %>
   <div class="flex flex-col gap-4">
     <h3>Examples</h3>
 
-    <% # Will only render if `FooExampleA` or `FooExampleB` renders %>
+    <!-- Will only render if `FooExampleA` or `FooExampleB` renders -->
     <%= render ViewComponentContrib::WrapperComponent.new.wrapped_in(wrapper) do |foo_wrapper| %>
       <div class="flex flex-col gap-4">
         <h4>Foo Examples</h4>
@@ -858,7 +858,7 @@ You can place any content inside a wrapper component. You can even nest wrapper 
       </div>
     <%- end -%>
 
-    <% # Will only render if `BarExampleA` or `BarExampleB` renders %>
+    <!-- Will only render if `BarExampleA` or `BarExampleB` renders -->
     <%= render ViewComponentContrib::WrapperComponent.new.wrapped_in(wrapper) do |bar_wrapper| %>
       <div class="flex flex-col gap-4">
         <h4>Bar Examples</h4>
