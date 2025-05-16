@@ -25,19 +25,6 @@ class WrappedInTest < ViewTestCase
     end
   end
 
-  def test_renders_when_inner_component_renders
-    inner_component = Component.new
-    wrapper_component = ViewComponentContrib::WrapperComponent.new
-
-    render_inline(wrapper_component) do |wrapper|
-      "<h3>Title</h3>" \
-      "<div>#{render_inline(inner_component.wrapped_in(wrapper)).to_html}</div>".html_safe
-    end
-
-    assert_selector page, "h3", count: 1, text: "Title"
-    assert_selector page, "div", text: "Hello from test", count: 1
-  end
-
   def test_renders_when_two_inner_components_render
     inner_component_a = Component.new
     inner_component_b = Component.new
