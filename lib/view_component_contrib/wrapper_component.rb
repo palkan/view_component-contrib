@@ -6,6 +6,8 @@ module ViewComponentContrib
   # Thus, wrapper could be used to conditionally render the outer html for components without
   # conditionals in templates.
   class WrapperComponent < ViewComponent::Base
+    include WrappedInHelper
+
     class DoubleRenderError < StandardError
       def initialize(component)
         super("A child component could only be rendered once within a wrapper: #{component}")

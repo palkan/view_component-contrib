@@ -63,4 +63,64 @@ class WrappedInTest < ViewTestCase
     assert_no_selector page, "h3"
     assert_no_selector page, "div"
   end
+
+  def test_outer_wrapper_renders_when_one_inner_wrapper_renders
+    inner_components_a = [Component.new, Component.new(should_render: false)]
+    inner_components_b = [Component.new(should_render: false), Component.new(should_render: false)]
+    inner_wrapper_component_a = ViewComponentContrib::WrapperComponent.new
+    inner_wrapper_component_b = ViewComponentContrib::WrapperComponent.new
+    outer_wrapper_component = ViewComponentContrib::WrapperComponent.new
+
+    render_inline(outer_wrapper_component) do |outer_wrapper|
+      "<h3>Title</h3>" \
+      "#{
+        render_inline(inner_wrapper_component_a.wrapped_in(outer_wrapper)) do |inner_wrapper_a|
+          "<h3>Subtitle A</h3>" \
+          "<div>#{render_inline(inner_components_a[0].wrapped_in(inner_wrapper_a)).to_html}</div>" \
+          "<div>#{render_inline(inner_components_a[1].wrapped_in(inner_wrapper_a)).to_html}</div>".html_safe
+        end
+      }" \
+      "#{
+        render_inline(inner_wrapper_component_b.wrapped_in(outer_wrapper)) do |inner_wrapper_b|
+          "<h3>Subtitle B</h3>" \
+          "<div>#{render_inline(inner_components_b[0].wrapped_in(inner_wrapper_b)).to_html}</div>" \
+          "<div>#{render_inline(inner_components_b[1].wrapped_in(inner_wrapper_b)).to_html}</div>".html_safe
+        end
+      }".html_safe
+    end
+
+    assert_selector page, "h3", count: 1, text: "Title"
+    assert_selector page, "h3", count: 1, text: "Subtitle A"
+    assert_no_selector page, "h3", text: "Subtitle B"
+    assert_selector page, "div", text: "Hello from test", count: 1
+  end
+
+  def test_outer_wrapper_does_not_render_when_no_inner_wrappers_render
+    inner_components_a = [Component.new(should_render: false), Component.new(should_render: false)]
+    inner_components_b = [Component.new(should_render: false), Component.new(should_render: false)]
+    inner_wrapper_component_a = ViewComponentContrib::WrapperComponent.new
+    inner_wrapper_component_b = ViewComponentContrib::WrapperComponent.new
+    outer_wrapper_component = ViewComponentContrib::WrapperComponent.new
+
+    render_inline(outer_wrapper_component) do |outer_wrapper|
+      "<h3>Title</h3>" \
+      "#{
+        render_inline(inner_wrapper_component_a.wrapped_in(outer_wrapper)) do |inner_wrapper_a|
+          "<h3>Subtitle A</h3>" \
+          "<div>#{render_inline(inner_components_a[0].wrapped_in(inner_wrapper_a)).to_html}</div>" \
+          "<div>#{render_inline(inner_components_a[1].wrapped_in(inner_wrapper_a)).to_html}</div>".html_safe
+        end
+      }" \
+      "#{
+        render_inline(inner_wrapper_component_b.wrapped_in(outer_wrapper)) do |inner_wrapper_b|
+          "<h3>Subtitle B</h3>" \
+          "<div>#{render_inline(inner_components_b[0].wrapped_in(inner_wrapper_b)).to_html}</div>" \
+          "<div>#{render_inline(inner_components_b[1].wrapped_in(inner_wrapper_b)).to_html}</div>".html_safe
+        end
+      }".html_safe
+    end
+
+    assert_no_selector page, "h3"
+    assert_no_selector page, "div"
+  end
 end
