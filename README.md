@@ -81,7 +81,7 @@ config.autoload_paths << Rails.root.join("app", "frontend", "components")
 First, we need to specify the lookup path for previews in the app's configuration:
 
 ```ruby
-config.view_component.preview_paths << Rails.root.join("app", "frontend", "components")
+config.view_component.previews.paths << Rails.root.join("app", "frontend", "components")
 ```
 
 By default, ViewComponent requires preview files to have `_preview.rb` suffix, and it's not configurable (yet). To overcome this, we have to patch the `ViewComponent::Preview` class:

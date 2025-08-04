@@ -12,7 +12,7 @@ ROOT_PATH = root.present? && root.downcase != "n" ? root : DEFAULT_ROOT
 
 root_paths = ROOT_PATH.split("/").map { |path| "\"#{path}\"" }.join(", ")
 
-application "config.view_component.preview_paths << Rails.root.join(#{root_paths})"
+application "config.view_component.previews.paths << Rails.root.join(#{root_paths})"
 application "config.autoload_paths << Rails.root.join(#{root_paths})"
 
 say_status :info, "✅ ViewComponent paths configured"
