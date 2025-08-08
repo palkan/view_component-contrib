@@ -16,11 +16,21 @@ Combustion.initialize! :action_controller, :action_view do
   config.logger = ActiveSupport::TaggedLogging.new(Logger.new(nil))
   config.log_level = :fatal
 
-  config.view_component.previews.enabled = true
+  if config.view_component.respond_to?(:previews)
+    config.view_component.previews.enabled = true
+  else
+    config.view_component.show_previews = true
+  end
 
   config.autoload_paths << Rails.root.join("app", "frontend", "components")
-  config.view_component.previews.paths << Rails.root.join("app", "frontend", "components")
-  config.view_component.previews.paths << Rails.root.join("app", "frontend", "previews")
+
+  if config.view_component.respond_to?(:previews)
+    config.view_component.previews.paths << Rails.root.join("app", "frontend", "components")
+    config.view_component.previews.paths << Rails.root.join("app", "frontend", "previews")
+  else
+    config.view_component.preview_paths << Rails.root.join("app", "frontend", "components")
+    config.view_component.preview_paths << Rails.root.join("app", "frontend", "previews")
+  end
 end
 
 class ApplicationController < ActionController::Base
