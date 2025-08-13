@@ -5,6 +5,7 @@ on:
     branches:
     - master
   pull_request:
+  workflow_dispatch:
   schedule:
     - cron: "10 4 * * */2"
 
@@ -19,9 +20,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ["3.0", "3.2"]
+        ruby: ["3.3", "3.4"]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}

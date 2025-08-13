@@ -81,6 +81,10 @@ config.autoload_paths << Rails.root.join("app", "frontend", "components")
 First, we need to specify the lookup path for previews in the app's configuration:
 
 ```ruby
+# view_component >= v4
+config.view_component.previews.paths << Rails.root.join("app", "frontend", "components")
+
+# view_component <= v3
 config.view_component.preview_paths << Rails.root.join("app", "frontend", "components")
 ```
 
