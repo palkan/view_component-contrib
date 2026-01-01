@@ -62,6 +62,14 @@ class StyledComponentTest < ViewTestCase
     assert_css "div.flex.flex-col.primary-color.primary-bg.text-sm"
   end
 
+  def test_render_string_value
+    component = Component.new(theme: "secondary", size: "md", disabled: true)
+
+    render_inline(component)
+
+    assert_css "div.secondary-color.secondary-bg.text-md.opacity-50"
+  end
+
   class SubComponent < Component
     erb_template <<~ERB
       <div class="<%= style(:component, theme: theme, size: size) %>">
