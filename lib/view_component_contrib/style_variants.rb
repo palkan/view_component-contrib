@@ -163,6 +163,7 @@ module ViewComponentContrib
         case val
         when true then :yes
         when false then :no
+        when String then val.to_sym
         else
           val
         end
