@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
 gem "rails", github: "rails/rails"
+gem "view_component", github: "viewcomponent/view_component"
 
 gemspec path: ".."
