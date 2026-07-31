@@ -2,6 +2,9 @@
 
 ## master
 
+- Add `#wrapped_in` helper to support wrappers that are conditional on multiple child components
+- Add `#placeholder` method to `ViewComponentContrib::WrapperComponent` that only renders a block if no conditional child components render
+
 ## 0.2.5 (2025-08-11)
 
 - Fix compatibility with view_component v4.

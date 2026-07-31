@@ -5,5 +5,6 @@ module ViewComponentContrib
   class Base < ViewComponent::Base
     include TranslationHelper
     include WrappedHelper
+    include WrappedInHelper
   end
 end
