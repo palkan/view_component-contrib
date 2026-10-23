@@ -2,6 +2,8 @@
 
 ## master
 
+- Fix `i18n_scope` and `i18n_namespace` being ignored with view_component v4.18+, and defining anonymous components raising `NoMethodError`. ([@anthony0030][])
+
 ## 0.2.5 (2025-08-11)
 
 - Fix compatibility with view_component v4.
@@ -117,3 +119,4 @@ See [view_component#1701](https://github.com/ViewComponent/view_component/pull/1
 [@palkan]: https://github.com/palkan
 [@fargelus]: https://github.com/fargelus
 [@dhnaranjo]: https://github.com/dhnaranjo
+[@anthony0030]: https://github.com/anthony0030

@@ -64,4 +64,14 @@ class TranslationHelperTest < ViewTestCase
 
     assert_selector "div", count: 1, text: "Hello from custom"
   end
+
+  def test_virtual_path_with_custom_config_set_after_it_was_read
+    klass = Class.new(ViewComponentContrib::Base)
+    klass.virtual_path
+
+    klass.i18n_namespace = "components"
+    klass.i18n_scope = %w[my_test component]
+
+    assert_equal "components.my_test.component", klass.virtual_path
+  end
 end
